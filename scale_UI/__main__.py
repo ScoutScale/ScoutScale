@@ -17,6 +17,9 @@ from _views.info_view import InfoWindow
 from _serial.serial_thread import SerialReaderThread
 
 
+
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -186,8 +189,9 @@ class MainWindow(QMainWindow):
         self.weightDisplay.setText(f"Current Weight: {self.weight} lb")
 
     def send_to_backend(self, weight, capture_date, zone):
-        # Mock function to send data to backend
-        print(f"Sending to backend: Weight: {weight}, Date: {capture_date}, Zone: {zone}")
+        #There is a timeout error. Look at Test.py
+        pass
+        
 
 
 if __name__ == "__main__":
