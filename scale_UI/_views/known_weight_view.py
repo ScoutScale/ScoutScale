@@ -24,6 +24,18 @@ class KnownWeightWindow(QDialog):
         self.setLayout(layout)
 
     def on_confirm(self):
-        known_weight = float(self.weightEntry.text())
-        self.serial_thread.calibrated_weight_scale_value_signal.emit(known_weight)
+        try:
+            known_weight = float(self.weightEntry.text())
+            if known_weight == 0:
+                self.serial_thread.calibration_abort_signal.emit()
+            else:
+                self.serial_thread.calibrated_weight_scale_value_signal.emit(known_weight)
+        except ValueError:
+            self.serial_thread.calibration_abort_signal.emit()
+        
         self.accept()
+    
+    def closeEvent(self, event):
+        self.serial_thread.calibration_abort_signal.emit()
+        super().closeEvent(event)
+

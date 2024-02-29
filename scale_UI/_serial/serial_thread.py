@@ -15,6 +15,8 @@ class SerialReaderThread(QThread):
     calibrate_capture_signal = pyqtSignal()
     calibrated_weight_scale_value_signal = pyqtSignal(float)
     calibration_complete_signal = pyqtSignal()
+    calibration_abort_signal = pyqtSignal()
+    confirm_calibration_abort_signal = pyqtSignal()
     change_port_signal = pyqtSignal(str)
 
     def __init__(self, config_parameters, serial_port_name):
@@ -28,6 +30,7 @@ class SerialReaderThread(QThread):
         self.waiting_for_calibration = False
         self.taring_in_progress = False
         self.weighting_in_progress = False
+        self.aborting_calibration = False
 
         self.connect_to_serial_port(serial_port_name)
 
@@ -62,6 +65,9 @@ class SerialReaderThread(QThread):
             elif self.taring_in_progress and data == 't':
                 self.taring_in_progress = False
                 self.tare_complete_signal.emit()
+            elif self.aborting_calibration and data == 'x':
+                self.aborting_calibration = False
+                self.confirm_calibration_abort_signal.emit()
             else:
                 self.new_data.emit(data)
         
@@ -94,3 +100,10 @@ class SerialReaderThread(QThread):
             weight_bytes += b'\n'
             self.weighting_event.wait()
             self.serial_port.write(weight_bytes)
+    
+    def send_calibration_abort_signal(self):
+        if self.serial_port and self.serial_port.isOpen():
+            self.serial_port.write(b'x')
+            self.waiting_for_calibration = False
+            self.weighting_in_progress = False
+            self.aborting_calibration = True

@@ -65,6 +65,9 @@ class MainWindow(QMainWindow):
         # calls serial_thread's calibrated_weight_scale_value fuction when the calibrated_weight_scale_value_signal is emitted
         self.serial_thread.calibrated_weight_scale_value_signal.connect(self.serial_thread.calibrated_weight_scale_value)
 
+        # calls serial_thread's send_calibration_abort_signal fuction when the calibration_abort_signal is emitted
+        self.serial_thread.calibration_abort_signal.connect(self.serial_thread.send_calibration_abort_signal)
+
         # calls serial_thread's connect_to_serial_port fuction when the change_port_signal is emitted
         self.serial_thread.change_port_signal.connect(self.serial_thread.connect_to_serial_port)
 

@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from PyQt5.QtCore import QEventLoop
 
+from _serial.serial_thread import SerialReaderThread
 from _views.known_weight_view import KnownWeightWindow
 
 class CalibrateWindow(QDialog):
@@ -10,6 +11,9 @@ class CalibrateWindow(QDialog):
         self.setStyleSheet("color: white; background-color: rgb(46,46,46);")
 
         self.serial_thread = serial_thread
+
+        # calls calibration_abort_confirm function when the confirm_calibration_abort_signal is emitted by serial_thread
+        self.serial_thread.confirm_calibration_abort_signal.connect(self.calibration_abort_confirm)
 
         self.initUI()
 
@@ -43,3 +47,10 @@ class CalibrateWindow(QDialog):
             event_loop = QEventLoop()
             self.serial_thread.calibration_complete_signal.connect(event_loop.quit)
             self.dialogLabel.setText("Calibration Complete. You can now close this window")
+
+    def calibration_abort_confirm(self):
+        self.dialogLabel.setText("Calibration Aborted. You can now close this window")
+
+    def closeEvent(self, event):
+        self.serial_thread.calibration_abort_signal.emit()
+        super().closeEvent(event)
