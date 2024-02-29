@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import "./App.css";
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
+import { firestore } from "./firebase";
+import { collection, addDoc } from "@firebase/firestore";
 
 function App() {
 
@@ -13,6 +15,7 @@ function App() {
   const authRef = useRef();
   const bagRef = useRef();
   const zoneRef = useRef();
+  const ref = collection(firestore, "React App");
 
   const enter = () => {
     setAuthLoading(true);
@@ -33,6 +36,19 @@ function App() {
       setAuthLoading(true);
       setTimeout(() => {
         alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
+
+        let data = {
+          bags: bagRef.current.value,
+          zone: zoneRef.current.value
+          // coords to be added
+        };
+
+        try {
+          addDoc(ref, data)
+        }catch(e){
+          console.log(e)
+        }
+
         bagRef.current.value = '';
         zoneRef.current.value = '';
         setAuthLoading(false);
