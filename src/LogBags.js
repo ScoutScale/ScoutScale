@@ -31,7 +31,8 @@ export const LogBags = () => {
         let data = {
           bags: bagRef.current.value,
           zone: zoneRef.current.value,
-          location: new GeoPoint(coords?.latitude, coords?.longitude)
+          location: new GeoPoint(coords?.latitude, coords?.longitude),
+          time: new Date().toLocaleString()
         };
 
         try {
