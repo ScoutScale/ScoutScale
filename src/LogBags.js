@@ -4,11 +4,12 @@ import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import { firestore } from "./firebase";
 import { GeoPoint } from 'firebase/firestore';
-import { collection, addDoc } from "@firebase/firestore";
+import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy } from "@firebase/firestore";
 import { useGeolocated } from "react-geolocated";
 
 export const LogBags = () => {
   const [authLoading, setAuthLoading] = useState(false);
+  const [isChecked, setChecked] = useState(false);
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
   useGeolocated({
@@ -21,31 +22,47 @@ export const LogBags = () => {
   const bagRef = useRef();
   const zoneRef = useRef();
   const ref = collection(firestore, "React App");
+  const valueChange = () => {setChecked(!isChecked);};
 
   const logBags = () => {
-    if(bagRef.current.value !== "" && zoneRef.current.value !== "") {
+    if (bagRef.current.value !== "" && zoneRef.current.value !== "") {
       setAuthLoading(true);
       setTimeout(() => {
         alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
-
+  
         let data = {
           bags: bagRef.current.value,
           zone: zoneRef.current.value,
           location: new GeoPoint(coords?.latitude, coords?.longitude),
-          time: new Date().toLocaleString()
+          time: new Date().toLocaleString(),
+          correction: isChecked
         };
-
+  
         try {
-          addDoc(ref, data)
-        }catch(e){
+          addDoc(ref, data).then(() => {
+            if (isChecked) {
+              const queryRef = query(ref, orderBy('time', 'desc'), limit(2)); 
+              getDocs(queryRef).then((querySnapshot) => {
+                  if (querySnapshot.size > 1) { 
+                    const documents = querySnapshot.docs;
+                    const docToDelete = documents[1]; 
+                    deleteDoc(docToDelete.ref).then(() => console.log("Entry was replaced successfully")).catch((error) => console.error("Error replacing entry: ", error));
+                  } else {
+                    console.log("No entry to delete or only one entry found.");
+                  }
+                }).catch((error) => console.error("Error accessing entry: ", error));
+            }
+          });
+        } catch (e) {
           console.log(e)
         }
-
+  
         bagRef.current.value = '';
         zoneRef.current.value = '';
         setAuthLoading(false);
+        setChecked(false);
       }, 500);
-    }else {
+    } else {
       alert("Please enter all fields");
     }
   }
@@ -74,6 +91,13 @@ export const LogBags = () => {
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
             <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-10" ref={bagRef} placeholder="bags"/>
             <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone"/>
+            <div className="text-center">
+              <label> 
+                Is this a correction to the previous entry?&nbsp;&nbsp;
+                <input type="checkbox" checked={isChecked} onChange={valueChange}/>
+                    <p>Warning: This WILL delete and replace your last entry. This action cannot be undone.</p>
+              </label>
+            </div>
             <button onClick={() => {logBags()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
                 {authLoading ? (
                 <TailSpin className="w-5 h-5" />
@@ -89,6 +113,6 @@ export const LogBags = () => {
         </div>
     )}
     </div>
-
   );
+
 }
