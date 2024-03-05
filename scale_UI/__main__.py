@@ -4,7 +4,7 @@ import pandas as pd
 from yaml import safe_load
 from datetime import datetime
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QCoreApplication
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, 
                              QVBoxLayout, QHBoxLayout, QWidget, QLabel, 
                              QDialog)
@@ -16,27 +16,38 @@ from _views.tare_view import TareWindow
 from _views.info_view import InfoWindow
 from _serial.serial_thread import SerialReaderThread
 
-
-
-
+"""
+To Do
+- Adjust how config parameters are handeled in different views
+- Test Calibration changes with Arduino
+- Build information view
+- Look into kill button to help with compiliation on Linux PC
+- Refine Tare Window
+- Refine Calibrate Window
+- Add Multiple units to Configure window, adjust unit displays accordingly
+- Refine Configure window
+- Add check for null zone field
+"""
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Scale Interface")
-        self.initUI()
         self.weight = 0
 
-        # pull 
         with open("_config/config.yaml", 'r') as file:
             self.config_parameters = safe_load(file)
 
+        self.initUI()
+
         # defaults to MOCK_PORT at the moment
-        self.selected_serial_port = self.config_parameters["mock_ports"][0]
+        self.selected_serial_port = self.config_parameters["mock ports"][0]
+
+        self.units = self.config_parameters["default units"]
 
         # initialize csv file
-        self.csv_file = self.config_parameters["data_folder"] + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".csv"
-        pd.DataFrame(columns=['Capture Date', 'Weight', 'Zone']).to_csv(self.csv_file, index=False)
+        self.csv_file = self.config_parameters["data folder"] + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".csv"
+        pd.DataFrame(columns=["Capture Date", f"Weight({self.units})", "Zone"]).to_csv(self.csv_file, index=False)
 
         # serial thread initialization
         self.serial_thread = SerialReaderThread(self.config_parameters, self.selected_serial_port)
@@ -79,6 +90,7 @@ class MainWindow(QMainWindow):
         super().closeEvent(event)
 
     def terminate(self):
+        QCoreApplication.quit()
         self.serial_thread.terminate()
         super().close()
     
@@ -95,18 +107,18 @@ class MainWindow(QMainWindow):
         row1 = QHBoxLayout()
 
         self.imageButton = QPushButton()
-        self.imageButton.setIcon(QIcon("logo.jpg"))
+        self.imageButton.setIcon(QIcon(self.config_parameters["ScoutScale logo"]))
         self.imageButton.setIconSize(QSize(75, 75))
         self.imageButton.setFixedSize(75, 75)
 
         self.imageButton.clicked.connect(self.show_information_page)
         row1.addWidget(self.imageButton)
 
-        scoutScaleFont = QFont("Gill Sans", 56)
-        scoutScaleFont.setWeight(QFont.Bold)
+        scout_scale_font = QFont("Gill Sans", 56)
+        scout_scale_font.setWeight(QFont.Bold)
 
         title = QLabel("ScoutScale")
-        title.setFont(scoutScaleFont)
+        title.setFont(scout_scale_font)
         title.setStyleSheet("color: black;") 
         row1.addWidget(title)
 
@@ -147,11 +159,12 @@ class MainWindow(QMainWindow):
         self.centralWidget.setLayout(layout)
 
     def show_configuration_menu(self):
-        dialog = ConfigurationWindow(self.config_parameters, self.serial_thread, self)
-        dialog.exec_()
+        config_window = ConfigurationWindow(self.config_parameters, self.units, self.serial_thread, self)
+        config_window.change_units_signal.connect(self.update_units)
+        config_window.exec_()
 
     def show_information_page(self):
-        self.InfoWindow = InfoWindow()
+        self.InfoWindow = InfoWindow(self.config_parameters)
         self.InfoWindow.exec_()
 
     def tare_scale(self):
@@ -166,7 +179,7 @@ class MainWindow(QMainWindow):
 
     def calibrate_scale(self):
         self.serial_thread.calibrate_signal.emit() 
-        calibrate_window = CalibrateWindow(self.serial_thread)
+        calibrate_window = CalibrateWindow(self.config_parameters, self.units, self.serial_thread)
         calibrate_window.exec_()      
 
     def capture_scale_output(self):
@@ -174,7 +187,7 @@ class MainWindow(QMainWindow):
         tempWeight = self.weight
         capture_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        capture_window = CaptureWindow(tempWeight)
+        capture_window = CaptureWindow(tempWeight, self.units)
         if capture_window.exec_() == QDialog.Accepted:
             zone = capture_window.text_box.text()
 
@@ -185,12 +198,18 @@ class MainWindow(QMainWindow):
         self.weight = weight
         self.update_weight_display()
 
+    def update_units(self, units):
+        self.units = units
+        pd.DataFrame([["Capture Date", f"Weight({self.units})", "Zone"]], columns=['Capture Date', 'Weight', 'Zone']).to_csv(self.csv_file, mode='a', header=False, index=False)
+
     def update_weight_display(self):
-        self.weightDisplay.setText(f"Current Weight: {self.weight} lb")
+        self.weightDisplay.setText(f"Current Weight: {self.weight} {self.units}")
 
     def send_to_backend(self, weight, capture_date, zone):
         #There is a timeout error. Look at Test.py
         pass
+
+        
         
 
 

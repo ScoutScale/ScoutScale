@@ -1,7 +1,19 @@
-mock_ports:
+mock ports:
   - /dev/ttyUSB0
   - /dev/ttyUSB1
 
 baudrate: 57600
 
-data_folder: "data/"
+data folder: "data/"
+
+ScoutScale logo: "_resources/ss_logo.jpg"
+
+team logo: "_resources/team icon.png"
+
+calibrate data points: 2
+
+default units: "lb"
+
+units:
+  - lb
+  - kg

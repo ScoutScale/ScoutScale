@@ -12,6 +12,7 @@ class SerialReaderThread(QThread):
     tare_complete_signal = pyqtSignal()
     calibrate_signal = pyqtSignal()
     zeroed_out_signal = pyqtSignal()
+    zeroed_out_tare_complete_signal = pyqtSignal()
     calibrate_capture_signal = pyqtSignal()
     calibrated_weight_scale_value_signal = pyqtSignal(float)
     calibration_complete_signal = pyqtSignal()
@@ -25,7 +26,9 @@ class SerialReaderThread(QThread):
         self.serial_port = None
         self.serial_port_name = serial_port_name
 
-        self.config_parameters = config_parameters
+        self.mock_port1_name = config_parameters["mock ports"][0]
+        self.mock_port2_name = config_parameters["mock ports"][1]
+        self.baudrate = config_parameters["baudrate"]
 
         self.waiting_for_calibration = False
         self.taring_in_progress = False
@@ -38,12 +41,12 @@ class SerialReaderThread(QThread):
         self.serial_port_name = port_name
 
         # currently set up to work with both real and mock ports
-        if (port_name != self.config_parameters["mock_ports"][0] and port_name != self.config_parameters["mock_ports"][1]):
-            self.serial_port = serial.Serial(port_name, baudrate=self.config_parameters["baudrate"])
-        elif (port_name == self.config_parameters["mock_ports"][1]):
-            self.serial_port = MockSerial(self.config_parameters["mock_ports"][1], self.config_parameters["baudrate"])
+        if (port_name !=  self.mock_port1_name and port_name != self.mock_port2_name):
+            self.serial_port = serial.Serial(port_name, baudrate=self.baudrate)
+        elif (port_name == self.mock_port2_name):
+            self.serial_port = MockSerial(self.mock_port2_name, self.baudrate)
         else:
-            self.serial_port = MockSerial(self.config_parameters["mock_ports"][0], self.config_parameters["baudrate"])
+            self.serial_port = MockSerial(self.mock_port1_name, self.baudrate)
 
     def terminate(self):
         super().terminate()
@@ -65,6 +68,10 @@ class SerialReaderThread(QThread):
             elif self.taring_in_progress and data == 't':
                 self.taring_in_progress = False
                 self.tare_complete_signal.emit()
+
+                if self.waiting_for_calibration == True:
+                    self.zeroed_out_tare_complete_signal.emit()
+                
             elif self.aborting_calibration and data == 'x':
                 self.aborting_calibration = False
                 self.confirm_calibration_abort_signal.emit()

@@ -1,17 +1,19 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QLineEdit
 
 class KnownWeightWindow(QDialog):
-    def __init__(self, serial_thread, parent=None):
+    def __init__(self, units, serial_thread, parent=None):
         super().__init__(parent)
         self.setStyleSheet("color: white; background-color: rgb(46,46,46);")
         self.serial_thread = serial_thread
+
+        self.units = units
 
         self.initUI()
 
     def initUI(self):
         layout = QVBoxLayout(self)
 
-        label = QLabel("Enter the known weight (lb):")
+        label = QLabel(f"Enter the known weight ({self.units}):")
         layout.addWidget(label)
 
         self.weightEntry = QLineEdit()
@@ -19,6 +21,8 @@ class KnownWeightWindow(QDialog):
 
         confirmButton = QPushButton("Confirm")
         confirmButton.clicked.connect(self.on_confirm)
+        confirmButton.setStyleSheet("QPushButton {background-color: rgb(54, 115, 210); color: white; border: 2px solid black; border-radius: 10px; }")
+        
         layout.addWidget(confirmButton)
 
         self.setLayout(layout)

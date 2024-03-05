@@ -190,9 +190,12 @@ void setCellCalFactor(float calibrationValue1, float calibrationValue2, float ca
   #endif
 }
 
-float calculateTotal(float unitConversionRatio, float cell1Value, float cell2Value, float cell3Value, float cell4Value){
-  return(cell1Value + cell2Value + cell3Value + cell4Value)/unitConversionRatio;
+float calculateTotal(float unitConversionRatio, float cell1Value, float cell2Value, float cell3Value, float cell4Value) {
+  float total = (cell1Value + cell2Value + cell3Value + cell4Value) / unitConversionRatio;
+  return round(total * 2.0) / 2.0; // Round to the nearest half pound
 }
+
+
 
 void tareCells(){
   #if (DEBUGGING_ACTIVE)
@@ -284,7 +287,7 @@ void getCellValues(float &cell1Value, float &cell2Value, float &cell3Value, floa
   #endif
 }
 
-float calculateWeightRatio(float zeroValue){
+float calculateWeightRatio(bool &calibrationCancelled, float zeroValue){
   bool resume = false;
   float totalWeightValue;
   float knownMass;
@@ -297,6 +300,7 @@ float calculateWeightRatio(float zeroValue){
   while (!resume)
   {
     newDataReady();
+
     if (Serial.available() > 0) {
       char inByte = Serial.read();
       if (inByte == 'w') {
@@ -307,30 +311,55 @@ float calculateWeightRatio(float zeroValue){
         Serial.println("w");
         resume = true;
       }
-    }
-  }
-
-  resume = false;
-
-  #if (DEBUGGING_ACTIVE)
-  Serial.print("Zero Value: ");
-  Serial.print(zeroValue);
-  Serial.print(" | Weight Value: ");
-  Serial.println(totalWeightValue);
-  Serial.println("Enter in the known weight (lbs)");
-  #endif
-
-  while (!resume)
-  {
-    if (Serial.available() > 0) {
-      knownMass = Serial.parseFloat();
-      if (knownMass != 0) {
+      else if (inByte == 'x'){
+        calibrationCancelled = true;
         resume = true;
       }
     }
   }
 
-  return ((totalWeightValue - zeroValue)/knownMass);
+  #if(DEBUGGING_ACTIVE)
+  Serial.print("Calibration Cancelled: ");
+  Serial.println(calibrationCancelled);
+  #endif
+
+  if (!calibrationCancelled){
+    resume = false;
+  
+
+    #if (DEBUGGING_ACTIVE)
+    Serial.print("Zero Value: ");
+    Serial.print(zeroValue);
+    Serial.print(" | Weight Value: ");
+    Serial.println(totalWeightValue);
+    Serial.println("Enter in the known weight (lbs)");
+    #endif
+
+    while (!resume) {
+      if (Serial.available() > 0) {
+        String input = Serial.readStringUntil('\n');
+        if (input == "x") {
+          calibrationCancelled = true;
+          resume = true;
+        } 
+        else {
+          knownMass = input.toFloat();
+          if (knownMass != 0) {
+            resume = true;
+          }
+        }
+      }
+    }
+
+    if (!calibrationCancelled)
+    {
+
+      return ((totalWeightValue - zeroValue)/knownMass);
+    }
+    
+  }
+
+  return 1; // default value for calibration cancellation  
 }
 
 float averageListVal(float list[], int length){
@@ -341,7 +370,7 @@ float averageListVal(float list[], int length){
   return total/length;
 }
 
-float calibrate()
+void calibrate(float &avgWeightRatio)
 {
   bool resume = false;
   float totalZeroValue;
@@ -349,7 +378,8 @@ float calibrate()
   float knownMass;
   float cell1Value, cell2Value, cell3Value, cell4Value;
   float calWeightRatios[NUMBER_OF_CAL_POR - 1];
-  float avgWeightRatio;
+
+  bool calibrationCancelled = false;
 
   #if (DEBUGGING_ACTIVE)
   Serial.println("Clear the scale and send the character 'z'");
@@ -366,26 +396,42 @@ float calibrate()
         totalZeroValue = cell1Value + cell2Value + cell3Value + cell4Value;
         resume = true;
       }
+      else if (inByte == 'x'){
+        calibrationCancelled = true;
+        resume = true;
+      }
     }
   }
 
-  resume = false;
+  if (!calibrationCancelled){
+    resume = false;
 
-  for (int i = 0; i < NUMBER_OF_CAL_POR - 1; i++)
-  {
-    calWeightRatios[i] = calculateWeightRatio(totalZeroValue);
+    for (int i = 0; i < NUMBER_OF_CAL_POR - 1; i++)
+    {
+      if (!calibrationCancelled){
+        calWeightRatios[i] = calculateWeightRatio(calibrationCancelled, totalZeroValue);
+      }
+    }
+
+    if (!calibrationCancelled){
+      avgWeightRatio = averageListVal(calWeightRatios, NUMBER_OF_CAL_POR - 1);
+    }
+
+    #if (DEBUGGING_ACTIVE)
+    Serial.print("Ratio: ");
+    Serial.println(avgWeightRatio);
+    #endif
+
+    if (!calibrationCancelled){
+      Serial.println("c");
+    }
+  }
+  
+  if (calibrationCancelled){
+    Serial.println("x");
   }
 
-  avgWeightRatio = averageListVal(calWeightRatios, NUMBER_OF_CAL_POR - 1);
 
-  #if (DEBUGGING_ACTIVE)
-  Serial.print("Ratio: ");
-  Serial.println(avgWeightRatio);
-  #endif
-
-  Serial.println("c");
-
-  return avgWeightRatio;
 }
 
 void setup(){
@@ -455,6 +501,9 @@ void loop() {
       getCellValues(cell1Value, cell2Value, cell3Value, cell4Value);
 
       #if (DEBUGGING_ACTIVE)
+      Serial.print("Weight Ratio: ");
+      Serial.print(unitConversionRatio);
+      Serial.print(" | ");
       Serial.print("1: ");
       Serial.print(cell1Value);
       Serial.print("  2: ");
@@ -481,7 +530,7 @@ void loop() {
       tareCells();
     }
     if (inByte == 'c') {
-      unitConversionRatio = calibrate();
+      calibrate(unitConversionRatio);
     }
   }
 
