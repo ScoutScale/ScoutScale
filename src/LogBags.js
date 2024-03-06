@@ -58,7 +58,6 @@ export const LogBags = () => {
         }
   
         bagRef.current.value = '';
-        zoneRef.current.value = '';
         setAuthLoading(false);
         setChecked(false);
       }, 500);
