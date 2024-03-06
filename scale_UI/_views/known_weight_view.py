@@ -8,9 +8,9 @@ class KnownWeightWindow(QDialog):
 
         self.units = units
 
-        self.initUI()
+        self.init_UI()
 
-    def initUI(self):
+    def init_UI(self):
         layout = QVBoxLayout(self)
 
         label = QLabel(f"Enter the known weight ({self.units}):")

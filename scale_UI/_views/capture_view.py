@@ -10,9 +10,9 @@ class CaptureWindow(QDialog):
 
         self.units = units
 
-        self.initUI(captured_weight)
+        self.init_UI(captured_weight)
 
-    def initUI(self, captured_weight):
+    def init_UI(self, captured_weight):
 
         label_font = QFont()
         label_font.setPointSize(20)

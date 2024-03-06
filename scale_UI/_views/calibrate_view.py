@@ -16,7 +16,8 @@ class CalibrateWindow(QDialog):
 
         self.number_of_data_points = config_parameters["calibrate data points"]
 
-        self.scale_zeroed = False
+        self.zero_button_pressed = False
+        self.weight_calibration_active = False
 
         # calls calibration_abort_confirm function when the confirm_calibration_abort_signal is emitted by serial_thread
         self.serial_thread.confirm_calibration_abort_signal.connect(self.calibration_abort_confirm)
@@ -24,9 +25,9 @@ class CalibrateWindow(QDialog):
          # calls zeroingComplete function when the zeroed_out_tare_complete_signal is emitted by serial_thread
         self.serial_thread.zeroed_out_tare_complete_signal.connect(self.zeroingComplete)
 
-        self.initUI()
+        self.init_UI()
 
-    def initUI(self):
+    def init_UI(self):
         layout = QVBoxLayout(self)
 
         label_font = QFont()
@@ -56,15 +57,18 @@ class CalibrateWindow(QDialog):
         layout.addLayout(buttonLayout)
 
     def on_zero_button_clicked(self):
-        self.serial_thread.zeroed_out_signal.emit()
+        if not self.zero_button_pressed:
+            self.zero_button_pressed = True
+            self.zeroButton.setStyleSheet("QPushButton {background-color: rgb(46,46,46); color: white; border: 2px solid black; border-radius: 10px; }")
+            self.serial_thread.zeroed_out_signal.emit()
 
     def zeroingComplete(self):
-        self.scale_zeroed = True
+        self.weight_calibration_active = True
         self.dialogLabel.setText("Place a known weight on the table and press the CALIBRATE button.")
         self.calibrateButton.setStyleSheet("QPushButton {background-color: rgb(54, 115, 210); blue: white; border: 2px solid black; border-radius: 10px; }")
 
     def on_calibrate_button_clicked(self):
-        if (self.scale_zeroed):
+        if (self.weight_calibration_active):
             self.serial_thread.calibrate_capture_signal.emit()
             known_weight_dialog = KnownWeightWindow(self.units, self.serial_thread)
             if known_weight_dialog.exec_() == QDialog.Accepted:
@@ -74,6 +78,8 @@ class CalibrateWindow(QDialog):
                 self.number_of_data_points -= 1
                 if (self.number_of_data_points == 1):
                     self.dialogLabel.setText("Calibration Complete. You can now close this window")
+                    self.calibrateButton.setStyleSheet("QPushButton {background-color: rgb(46,46,46); color: white; border: 2px solid black; border-radius: 10px; }")
+                    self.weight_calibration_active = False
                 else:
                     self.dialogLabel.setText("Place a different known weight on the table and press the CALIBRATE button.")
 

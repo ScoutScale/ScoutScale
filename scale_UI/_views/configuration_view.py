@@ -1,5 +1,5 @@
 import serial.tools.list_ports
-from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel, QButtonGroup
 from PyQt5.QtCore import pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QFont
 
@@ -16,6 +16,12 @@ class ConfigurationWindow(QDialog):
         self.current_unit = units
         self.serial_thread = serial_thread
 
+        self.port_button_group = QButtonGroup(self)
+        self.unit_button_group = QButtonGroup(self)
+
+        self.init_UI()
+
+    def init_UI(self):
         self.label_font = QFont()
         self.label_font.setPointSize(20)
 
@@ -46,7 +52,6 @@ class ConfigurationWindow(QDialog):
         kill_button.clicked.connect(QCoreApplication.quit)
         self.layout.addWidget(kill_button)
 
-
     def populate_ports(self):
         ports = self.get_available_serial_ports()
 
@@ -55,6 +60,7 @@ class ConfigurationWindow(QDialog):
             button.setFont(self.button_font)
             button.setChecked(port == self.serial_thread.serial_port_name)
             button.toggled.connect(lambda checked, port=port: self.on_port_radio_button_toggled(checked, port))
+            self.port_button_group.addButton(button)
             self.ports_layout.addWidget(button)
 
         self.layout.addLayout(self.ports_layout)
@@ -76,6 +82,7 @@ class ConfigurationWindow(QDialog):
             button.setFont(self.button_font)
             button.setChecked(possible_unit == self.current_unit)
             button.toggled.connect(lambda checked, unit=possible_unit: self.on_units_radio_button_toggled(checked, unit))
+            self.unit_button_group.addButton(button)
             self.units_layout.addWidget(button)
 
         self.layout.addLayout(self.units_layout)

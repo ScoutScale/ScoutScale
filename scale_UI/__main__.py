@@ -16,18 +16,6 @@ from _views.tare_view import TareWindow
 from _views.info_view import InfoWindow
 from _serial.serial_thread import SerialReaderThread
 
-"""
-To Do
-- Adjust how config parameters are handeled in different views
-- Test Calibration changes with Arduino
-- Build information view
-- Look into kill button to help with compiliation on Linux PC
-- Refine Tare Window
-- Refine Calibrate Window
-- Add Multiple units to Configure window, adjust unit displays accordingly
-- Refine Configure window
-- Add check for null zone field
-"""
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -38,7 +26,7 @@ class MainWindow(QMainWindow):
         with open("_config/config.yaml", 'r') as file:
             self.config_parameters = safe_load(file)
 
-        self.initUI()
+        self.init_UI()
 
         # defaults to MOCK_PORT at the moment
         self.selected_serial_port = self.config_parameters["mock ports"][0]
@@ -94,7 +82,7 @@ class MainWindow(QMainWindow):
         self.serial_thread.terminate()
         super().close()
     
-    def initUI(self):
+    def init_UI(self):
         self.centralWidget = QWidget()
         self.setCentralWidget(self.centralWidget)
         self.centralWidget.setStyleSheet("background-color: rgb(254,248,234);")  
@@ -190,9 +178,10 @@ class MainWindow(QMainWindow):
         capture_window = CaptureWindow(tempWeight, self.units)
         if capture_window.exec_() == QDialog.Accepted:
             zone = capture_window.text_box.text()
-
-            pd.DataFrame([[capture_date, tempWeight, zone]], columns=['Capture Date', 'Weight', 'Zone']).to_csv(self.csv_file, mode='a', header=False, index=False)
-            self.send_to_backend(tempWeight, capture_date, zone) 
+            
+            if zone != "" and tempWeight != 0:
+                pd.DataFrame([[capture_date, tempWeight, zone]], columns=['Capture Date', 'Weight', 'Zone']).to_csv(self.csv_file, mode='a', header=False, index=False)
+                self.send_to_backend(tempWeight, capture_date, zone) 
 
     def update_weight(self, weight):
         self.weight = weight

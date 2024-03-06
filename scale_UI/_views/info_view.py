@@ -18,9 +18,9 @@ class InfoWindow(QDialog):
         self.team_logo_location = config_paramters["team logo"]
         self.ss_logo_location = config_paramters["ScoutScale logo"]
 
-        self.initUI()
+        self.init_UI()
 
-    def initUI(self):
+    def init_UI(self):
         layout = QVBoxLayout(self)
 
         font = QFont()

@@ -5,9 +5,9 @@ from PyQt5.QtGui import QFont
 class TareWindow(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.initUI()
+        self.init_UI()
     
-    def initUI(self):
+    def init_UI(self):
         self.setWindowTitle("Tare View")
         self.setStyleSheet("color: white; background-color: rgb(46,46,46);") 
         font = QFont("Arial", 20)
