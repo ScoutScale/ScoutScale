@@ -36,7 +36,7 @@ function App() {
         <LogBags />
       ) : (
         <div className="flex items-center flex-col flex items-center">
-          <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to Scout Scale!</div>
+          <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to ScoutScale!</div>
           <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-2/5 h-2/5 mb-10 mt-10"/>
           <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-20" ref={authRef} placeholder="auth code"/>
           <button onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
