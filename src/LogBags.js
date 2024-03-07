@@ -25,7 +25,7 @@ export const LogBags = () => {
   const valueChange = () => {setChecked(!isChecked);};
 
   const logBags = () => {
-    if (bagRef.current.value !== "" && zoneRef.current.value !== "") {
+    if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value)>0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value)>0) {
       setAuthLoading(true);
       setTimeout(() => {
         alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
@@ -62,7 +62,7 @@ export const LogBags = () => {
         setChecked(false);
       }, 500);
     } else {
-      alert("Please enter all fields");
+      alert("Please enter all fields and make sure they are valid integers.");
     }
   }
 
