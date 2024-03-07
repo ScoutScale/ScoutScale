@@ -31,8 +31,8 @@ export const LogBags = () => {
         alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
   
         let data = {
-          bags: bagRef.current.value,
-          zone: zoneRef.current.value,
+          bags: parseInt(bagRef.current.value),
+          zone: parseInt(zoneRef.current.value),
           location: new GeoPoint(coords?.latitude, coords?.longitude),
           time: new Date().toLocaleString(),
           correction: isChecked
@@ -46,11 +46,11 @@ export const LogBags = () => {
                   if (querySnapshot.size > 1) { 
                     const documents = querySnapshot.docs;
                     const docToDelete = documents[1]; 
-                    deleteDoc(docToDelete.ref).then(() => console.log("Entry was replaced successfully")).catch((error) => console.error("Error replacing entry: ", error));
+                    deleteDoc(docToDelete.ref).then(() => alert("Entry was replaced successfully")).catch((error) => alert("Error replacing entry: ", error));
                   } else {
-                    console.log("No entry to delete or only one entry found.");
+                    alert("No entry to delete or only one entry found.");
                   }
-                }).catch((error) => console.error("Error accessing entry: ", error));
+                }).catch((error) => alert("Error accessing entry: ", error));
             }
           });
         } catch (e) {
