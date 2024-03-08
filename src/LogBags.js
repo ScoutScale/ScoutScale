@@ -29,6 +29,7 @@ export const LogBags = ({ authCode }) => {
     setAuthLoading(true);
     setTimeout(() => {
       alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
+      
       let data = {
         bags: parseInt(bagRef.current.value),
         zone: parseInt(zoneRef.current.value),
@@ -62,7 +63,7 @@ export const LogBags = ({ authCode }) => {
       setChecked(false);
       }, 500);
     } else {
-      console.log("Please enter all fields and make sure they are valid integers.");
+      alert("Please enter all fields and make sure they are valid integers.");
     }
   }
 
