@@ -6,9 +6,11 @@ baudrate: 57600
 
 data folder: "data/"
 
-ScoutScale logo: "_resources/ss_logo.jpg"
+ScoutScale logo: "_resources/ss_logo.png"
 
 team logo: "_resources/team icon.png"
+
+qr logo: "_resources/QR_icon.png"
 
 calibrate data points: 2
 
@@ -17,3 +19,7 @@ default units: "lb"
 units:
   - lb
   - kg
+
+uploading data: False
+
+web app URL: https://scout-scale-1.web.app

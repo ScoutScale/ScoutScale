@@ -17,7 +17,6 @@ class SerialReaderThread(QThread):
     calibrated_weight_scale_value_signal = pyqtSignal(float)
     calibration_complete_signal = pyqtSignal()
     calibration_abort_signal = pyqtSignal()
-    confirm_calibration_abort_signal = pyqtSignal()
     change_port_signal = pyqtSignal(str)
 
     def __init__(self, config_parameters, serial_port_name):
@@ -71,10 +70,8 @@ class SerialReaderThread(QThread):
 
                 if self.waiting_for_calibration == True:
                     self.zeroed_out_tare_complete_signal.emit()
-                
             elif self.aborting_calibration and data == 'x':
                 self.aborting_calibration = False
-                self.confirm_calibration_abort_signal.emit()
             else:
                 self.new_data.emit(data)
         

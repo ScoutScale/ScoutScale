@@ -4,7 +4,7 @@ class MockSerial:
     def __init__(self, port, baudrate):
         self.port = port
         self.baudrate = baudrate
-        self.weight = 0
+        self.weight = 200
         self.taring = False
         self.weighing = False
         self.calibrate_abort = False

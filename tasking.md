@@ -11,7 +11,7 @@
 ### To Do:
 - Add debug functionality to be outputed to UI
     - Main focus currently is sending leg values (in units)
-    - Needs to receive serial message to activate (currently thinking "d")
+    - Needs to receive serial message to activate (currently thinking 'd')
 
 
 ## Scale UI
@@ -20,15 +20,14 @@
 - Move more parameters into configuration yaml file
 - Restructure configuration yaml file
 - Build information view
-- Pause all views while tare is occurring
 - Refine Configure window
-- Add dynamic window resizing
 - Add debug view to allow for load value views for each individual leg
     - Requires firmware adjustments
-- Add QR code for the weblink for client web application
 - Connect to an existing CSV file
-- Dependency file
 - End program confirmation view
+- Start up checklist
+- default values for specific style guide items (if they are needed)
+- units sent to database
 
 
 
