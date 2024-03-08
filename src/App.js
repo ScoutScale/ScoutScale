@@ -2,38 +2,41 @@ import { useState, useRef } from 'react';
 import "./App.css";
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
-import { firestore } from "./firebase";
-import { collection, addDoc } from "@firebase/firestore";
+import { collection, query, where, getDocs } from "@firebase/firestore";
 import { useGeolocated } from "react-geolocated";
 import { LogBags } from './LogBags';
+import { firestore } from "./firebase";
 
 function App() {
 
   const [authenticated, setAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
-
-  const authCode = '12345';
+  const [authCode, setAuthCode] = useState(0);
 
   const authRef = useRef();
+  const ref = collection(firestore, "Authentication");
 
-  const enter = () => {
+  const enter = async () => {
     setAuthLoading(true);
-    setTimeout(() => {
-      if (authRef.current.value === authCode) {
-        setAuthenticated(true);
-      }else {
-        authRef.current.value = '';
-        alert("invalid auth code");
-      }
+    const q = query(ref, where("code", "==", parseInt(authRef.current.value)));
+    
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.size > 0) {
+      setAuthenticated(true);
+      setAuthCode(parseInt(authRef.current.value));
       setAuthLoading(false);
-    }, 500);
+    }else{
+      authRef.current.value = "";
+      setAuthenticated(false);
+      setAuthLoading(false);
+    }
 
   }
 
   return (
     <div className="background w-full h-screen" >
       {authenticated ? (
-        <LogBags />
+        <LogBags authCode={authCode} />
       ) : (
         <div className="flex items-center flex-col flex items-center">
           <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to ScoutScale!</div>

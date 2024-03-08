@@ -7,7 +7,7 @@ import { GeoPoint } from 'firebase/firestore';
 import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy } from "@firebase/firestore";
 import { useGeolocated } from "react-geolocated";
 
-export const LogBags = () => {
+export const LogBags = ({ authCode }) => {
   const [authLoading, setAuthLoading] = useState(false);
   const [isChecked, setChecked] = useState(false);
 
@@ -35,7 +35,8 @@ export const LogBags = () => {
           zone: parseInt(zoneRef.current.value),
           location: new GeoPoint(coords?.latitude, coords?.longitude),
           time: new Date(),
-          correction: isChecked
+          correction: isChecked,
+          authCode: authCode
         };
   
         try {
