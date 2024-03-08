@@ -150,6 +150,11 @@ configuration view:
       font: Arial
       text color: white
       text size: 20
+    output file:
+      text: Output File
+      font: Arial
+      text color: white
+      text size: 20
   buttons:
     exit:
       label: Exit Program

@@ -1,13 +1,16 @@
 import serial.tools.list_ports
-from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel, QButtonGroup
+from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel, QButtonGroup, QComboBox
 from PyQt5.QtCore import pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QFont
+import os
+
 
 class ConfigurationWindow(QDialog):
 
     change_units_signal = pyqtSignal(str)
+    change_output_file_signal = pyqtSignal(str)
 
-    def __init__(self, style_guide, config_parameters, units, serial_thread, parent=None):
+    def __init__(self, style_guide, config_parameters, default_output_file, units, serial_thread, parent=None):
         super().__init__(parent)
 
         configuration_view_style = style_guide.get("configuration view", {})
@@ -31,6 +34,11 @@ class ConfigurationWindow(QDialog):
         self.units_dialog_text_color = dialog_styles.get("units", {}).get("text color")
         self.units_dialog_text_size = dialog_styles.get("units", {}).get("text size")
 
+        self.output_file_dialog_text = dialog_styles.get("output file", {}).get("text")
+        self.output_file_font = dialog_styles.get("output file", {}).get("font")
+        self.output_file_text_color = dialog_styles.get("output file", {}).get("text color")
+        self.output_file_text_size = dialog_styles.get("output file", {}).get("text size")
+
         self.exit_button_label = button_styles.get("exit", {}).get("label")
         self.exit_button_color = button_styles.get("exit", {}).get("color")
         self.exit_button_font = button_styles.get("exit", {}).get("font")
@@ -47,11 +55,13 @@ class ConfigurationWindow(QDialog):
         self.radio_button_units_text_color = button_styles.get("radio buttons", {}).get("units", {}).get("text color")
         self.radio_button_units_text_size = button_styles.get("radio buttons", {}).get("units", {}).get("text size")
 
-        self.mock_ports = config_parameters["mock ports"]
-        self.supported_units = config_parameters["units"]
+        self.mock_ports = config_parameters["Serial"]["mock ports"]
+        self.supported_units = config_parameters["weight units"]["compatible units"]
+        self.data_folder = config_parameters["Local Data Collection"]["folder"]
 
         self.current_unit = units
         self.serial_thread = serial_thread
+        self.default_output_file = default_output_file
 
         self.port_button_group = QButtonGroup(self)
         self.unit_button_group = QButtonGroup(self)
@@ -80,6 +90,17 @@ class ConfigurationWindow(QDialog):
 
         self.units_layout = QVBoxLayout()
         self.populate_units()
+
+        port_label = QLabel(self.output_file_dialog_text)
+        port_label.setFont(QFont(self.output_file_font, self.output_file_text_size))
+        port_label.setStyleSheet(f"color: {self.output_file_text_color}")
+        self.layout.addWidget(port_label)
+
+        self.file_combo_box = QComboBox()
+        self.file_combo_box.currentIndexChanged.connect(self.on_file_selected)
+        self.populate_files()
+        self.set_default_selected_file()
+        self.layout.addWidget(self.file_combo_box)
 
         self.layout.addStretch()
 
@@ -136,6 +157,22 @@ class ConfigurationWindow(QDialog):
     def on_units_radio_button_toggled(self, checked, unit):
         if checked:
             self.change_units_signal.emit(unit)
+
+    def populate_files(self):
+        data_files = os.listdir(self.data_folder)
+        for file_name in data_files:
+            self.file_combo_box.addItem(file_name)
+
+    def on_file_selected(self):
+        selected_file = self.file_combo_box.currentText()
+        self.change_output_file_signal.emit(selected_file)
+
+    def set_default_selected_file(self):
+        default_file_name =self.default_output_file
+        index = self.file_combo_box.findText(default_file_name)
+        if index != -1:
+            self.file_combo_box.setCurrentIndex(index)
+    
 
 
 

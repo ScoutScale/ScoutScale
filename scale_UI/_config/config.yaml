@@ -1,25 +1,38 @@
-mock ports:
+Firebase:
+  key: _config/key.json
+  collection name: Scale App
+  labels:
+    weight: Weight
+    units: Unit
+    date: Date
+    zone: Zone
+  uploading data: False
+
+Local Data Collection:
+  folder: data/
+  labels:
+    weight: Weight
+    units: Unit
+    date: Capture Date
+    zone: Zone
+  default file name: ScoutScale_data.csv
+  new file creation mode: False
+  
+Serial:
+  baudrate:
+  mock ports:
   - /dev/ttyUSB0
   - /dev/ttyUSB1
 
-baudrate: 57600
-
-data folder: "data/"
-
-ScoutScale logo: "_resources/ss_logo.png"
-
-team logo: "_resources/team icon.png"
-
-qr logo: "_resources/QR_icon.png"
-
-calibrate data points: 2
-
-default units: "lb"
-
-units:
+weight units:
+  default unit: lb
+  compatible units:
   - lb
   - kg
 
-uploading data: False
+calibrate data points: 2
 
 web app URL: https://scout-scale-1.web.app
+
+
+

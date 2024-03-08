@@ -25,9 +25,9 @@ class SerialReaderThread(QThread):
         self.serial_port = None
         self.serial_port_name = serial_port_name
 
-        self.mock_port1_name = config_parameters["mock ports"][0]
-        self.mock_port2_name = config_parameters["mock ports"][1]
-        self.baudrate = config_parameters["baudrate"]
+        self.mock_port1_name = config_parameters["Serial"]["mock ports"][0]
+        self.mock_port2_name = config_parameters["Serial"]["mock ports"][1]
+        self.baudrate = config_parameters["Serial"]["baudrate"]
 
         self.waiting_for_calibration = False
         self.taring_in_progress = False

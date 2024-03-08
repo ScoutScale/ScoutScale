@@ -1,3 +1,4 @@
+import os
 import sys
 import pandas as pd
 import firebase_admin
@@ -24,29 +25,32 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
+        self.retrieve_config_file()
         self.retrieve_style_guide()
-        self.get_main_window_style_guide_paramters()
+
+        self.get_main_window_style_guide_parameters()
+
         self.weight = 0
 
-        cred = credentials.Certificate("key.json")
+        cred = credentials.Certificate(self.config_parameters["Firebase"]["key"])
         firebase_admin.initialize_app(cred)
-
-        with open("_config/config.yaml", 'r') as file:
-            self.config_parameters = safe_load(file)
 
         self.init_UI()
 
-        self.selected_serial_port = self.config_parameters["mock ports"][0]
-        self.units = self.config_parameters["default units"]
-        self.uploading = self.config_parameters["uploading data"]
-
-        self.csv_file = self.config_parameters["data folder"] + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".csv"
-        pd.DataFrame(columns=["Capture Date", f"Weight({self.units})", "Zone"]).to_csv(self.csv_file, index=False)
+        self.selected_serial_port = self.config_parameters["Serial"]["mock ports"][0]
+        self.units = self.config_parameters["weight units"]["default unit"]
+        self.uploading = self.config_parameters["Firebase"]["uploading data"]
+        
+        self.connect_to_output_file("__init__")
 
         self.serial_thread = SerialReaderThread(self.config_parameters, self.selected_serial_port)
         self.connect_signals()
         self.serial_thread.start()
     
+    def retrieve_config_file(self):
+        with open("_config/config.yaml", 'r') as file:
+            self.config_parameters = safe_load(file)
+
     def retrieve_style_guide(self):
         with open("_config/style_guide.yaml", 'r') as file:
             self.style_guide = safe_load(file)
@@ -82,8 +86,8 @@ class MainWindow(QMainWindow):
         QCoreApplication.quit()
         self.serial_thread.terminate()
         super().close()
-    
-    def get_main_window_style_guide_paramters(self):
+
+    def get_main_window_style_guide_parameters(self):
         main_view_style = self.style_guide.get("main view", {})
         window_style = main_view_style.get("window", {})
         header_style = main_view_style.get("header", {})
@@ -253,9 +257,31 @@ class MainWindow(QMainWindow):
             self.resize(self.main_window_width, self.main_window_height)
 
     def show_configuration_menu(self):
-        config_window = ConfigurationWindow(self.style_guide, self.config_parameters, self.units, self.serial_thread, self)
+        csv_file_name = self.csv_file.replace(self.config_parameters["Local Data Collection"]["folder"], "")
+        config_window = ConfigurationWindow(self.style_guide, self.config_parameters, csv_file_name, self.units, self.serial_thread, self)
         config_window.change_units_signal.connect(self.update_units)
+        config_window.change_output_file_signal.connect(self.connect_to_output_file)
         config_window.exec_()
+    
+    def connect_to_output_file(self, file_name):
+
+        date_header = self.config_parameters["Local Data Collection"]["labels"]["date"]
+        weight_header = self.config_parameters["Local Data Collection"]["labels"]["weight"]
+        unit_header = self.config_parameters["Local Data Collection"]["labels"]["units"]
+        zone_header = self.config_parameters["Local Data Collection"]["labels"]["zone"]
+
+        if self.config_parameters["Local Data Collection"]["new file creation mode"] is True:
+            self.csv_file = self.config_parameters["Local Data Collection"]["folder"] + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".csv"
+            pd.DataFrame(columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, index=False)
+        else:
+            if file_name != "__init__":
+                self.csv_file = self.config_parameters["Local Data Collection"]["folder"] + file_name
+            else:
+                self.csv_file = self.config_parameters["Local Data Collection"]["folder"] + self.config_parameters["Local Data Collection"]["default file name"]
+
+            if not os.path.exists(self.csv_file):
+                pd.DataFrame(columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, index=False, mode='w')
+
 
     def show_information_page(self):
         self.InfoWindow = InfoWindow(self.style_guide, self.config_parameters)
@@ -281,34 +307,39 @@ class MainWindow(QMainWindow):
         tempWeight = self.weight
         capture_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        date_header = self.config_parameters["Local Data Collection"]["labels"]["date"]
+        weight_header = self.config_parameters["Local Data Collection"]["labels"]["weight"]
+        unit_header = self.config_parameters["Local Data Collection"]["labels"]["units"]
+        zone_header = self.config_parameters["Local Data Collection"]["labels"]["zone"]
+
         capture_window = CaptureWindow(self.style_guide, tempWeight, self.units)
         if capture_window.exec_() == QDialog.Accepted:
             zone = capture_window.text_box.text()
             
             if zone != "" and tempWeight != 0:
-                pd.DataFrame([[capture_date, tempWeight, zone]], columns=['Capture Date', 'Weight', 'Zone']).to_csv(self.csv_file, mode='a', header=False, index=False)
-                self.send_to_backend(tempWeight, capture_date, zone) 
+                pd.DataFrame([[capture_date, tempWeight, self.units, zone]], columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, mode='a', header=False, index=False)
+                self.send_to_backend(tempWeight, zone) 
 
     def update_weight(self, weight):
         self.weight = weight
         self.update_weight_display()
 
     def update_units(self, units):
-        self.units = units
-        pd.DataFrame([["Capture Date", f"Weight({self.units})", "Zone"]], columns=['Capture Date', 'Weight', 'Zone']).to_csv(self.csv_file, mode='a', header=False, index=False)
+        self.units = units     
 
     def update_weight_display(self):
          self.weight_display.setText(f"{self.current_weight_label_text} {self.weight} {self.units}")
 
-    def send_to_backend(self, weight, capture_date, zone):
+    def send_to_backend(self, weight, zone):
         if self.uploading:
             db = firestore.client()
             data = {
-            'Weight': float(weight),
-            'Date' : firestore.SERVER_TIMESTAMP,
-            'Zone' : int(zone)
+            self.config_parameters["Firebase"]["labels"]["weight"] : float(weight),
+            self.config_parameters["Firebase"]["labels"]["units"] : self.units,
+            self.config_parameters["Firebase"]["labels"]["date"] : firestore.SERVER_TIMESTAMP,
+            self.config_parameters["Firebase"]["labels"]["zone"] : int(zone)
             }
-            doc_ref = db.collection('Scale App').document()
+            doc_ref = db.collection(self.config_parameters["Firebase"]["collection name"]).document()
             doc_ref.set(data)
 
     def generate_qr_code(self):
@@ -327,8 +358,6 @@ class MainWindow(QMainWindow):
         self.tare_button.setFont(self.tare_button_font)
         self.calibrate_button.setFont(self.calibrate_button_font)
         super().resizeEvent(event)
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
