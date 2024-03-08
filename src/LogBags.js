@@ -4,7 +4,7 @@ import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import { firestore } from "./firebase";
 import { GeoPoint } from 'firebase/firestore';
-import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy } from "@firebase/firestore";
+import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy, where } from "@firebase/firestore";
 import { useGeolocated } from "react-geolocated";
 
 export const LogBags = ({ authCode }) => {
@@ -25,45 +25,44 @@ export const LogBags = ({ authCode }) => {
   const valueChange = () => {setChecked(!isChecked);};
 
   const logBags = () => {
-    if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value)>0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value)>0) {
-      setAuthLoading(true);
-      setTimeout(() => {
-        alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
-  
-        let data = {
-          bags: parseInt(bagRef.current.value),
-          zone: parseInt(zoneRef.current.value),
-          location: new GeoPoint(coords?.latitude, coords?.longitude),
-          time: new Date(),
-          correction: isChecked,
-          authCode: authCode
-        };
-  
-        try {
-          addDoc(ref, data).then(() => {
-            if (isChecked) {
-              const queryRef = query(ref, orderBy('time', 'desc'), limit(2)); 
-              getDocs(queryRef).then((querySnapshot) => {
-                  if (querySnapshot.size > 1) { 
-                    const documents = querySnapshot.docs;
-                    const docToDelete = documents[1]; 
-                    deleteDoc(docToDelete.ref).then(() => alert("Entry was replaced successfully")).catch((error) => alert("Error replacing entry: ", error));
-                  } else {
-                    alert("No entry to delete or only one entry found.");
-                  }
-                }).catch((error) => alert("Error accessing entry: ", error));
-            }
-          });
-        } catch (e) {
-          console.log(e)
-        }
-  
-        bagRef.current.value = '';
-        setAuthLoading(false);
-        setChecked(false);
+  if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value) > 0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value) > 0) {
+    setAuthLoading(true);
+    setTimeout(() => {
+      alert(`Bag ${bagRef.current.value} has been added to Zone ${zoneRef.current.value}`);
+      let data = {
+        bags: parseInt(bagRef.current.value),
+        zone: parseInt(zoneRef.current.value),
+        location: new GeoPoint(coords?.latitude, coords?.longitude),
+        time: new Date(),
+        correction: isChecked,
+        authCode: authCode
+      };
+
+      try {
+        addDoc(ref, data).then(() => {
+          if (isChecked) {
+            const queryRef = query(ref, orderBy('time', 'desc'), where("authCode", "==", parseInt(authCode)), limit(2));  
+            getDocs(queryRef).then((querySnapshot) => {
+                if (querySnapshot.size > 1) { 
+                  const documents = querySnapshot.docs;
+                  const docToDelete = documents[1]; 
+                  deleteDoc(docToDelete.ref).then(() => console.log("Entry was replaced successfully")).catch((error) => console.log("Error replacing entry: ", error));
+                } else {
+                  console.log("No entry to delete or only one entry found.");
+                }
+              }).catch((error) => console.log("Error accessing entry: ", error));
+          }
+        });
+      } catch (e) {
+        console.log(e)
+      }
+
+      bagRef.current.value = '';
+      setAuthLoading(false);
+      setChecked(false);
       }, 500);
     } else {
-      alert("Please enter all fields and make sure they are valid integers.");
+      console.log("Please enter all fields and make sure they are valid integers.");
     }
   }
 
