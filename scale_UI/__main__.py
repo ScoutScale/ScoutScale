@@ -338,7 +338,6 @@ class MainWindow(QMainWindow):
                                             text-align: {self.menu_button_text_alignment};""")
         self.hamburger_button.setFlat(True)
         self.hamburger_button.setFixedSize(QSize(self.menu_button_width, self.menu_button_height)) 
-        #self.hamburger_button.clicked.connect(self.show_configuration_menu)
         self.hamburger_button.clicked.connect(self.toggle_side_menu)
         row1.addWidget(self.hamburger_button)
 
@@ -393,7 +392,7 @@ class MainWindow(QMainWindow):
 
         self.side_menu = SideMenu(self.style_guide)
         self.side_menu.delete_last_entry_signal.connect(self.delete_previous_capture)
-        self.side_menu.show_check_list_signal.connect(self.show_configuration_menu)
+        self.side_menu.show_check_list_signal.connect(self.open_checklist)
         self.side_menu.generate_qr_code_signal.connect(self.generate_qr_code)
         self.side_menu.show_configuration_menu_signal.connect(self.show_configuration_menu)
         self.side_menu_layout = QVBoxLayout()
@@ -544,6 +543,9 @@ class MainWindow(QMainWindow):
         self.tare_button.setFont(self.tare_button_font)
         self.calibrate_button.setFont(self.calibrate_button_font)
         super().resizeEvent(event)
+
+    def open_checklist(self):
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
