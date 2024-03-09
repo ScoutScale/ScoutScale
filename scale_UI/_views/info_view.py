@@ -9,7 +9,7 @@ info_text = """
 
 
 class InfoWindow(QDialog):
-    def __init__(self, style_guide, config_paramters, parent=None):
+    def __init__(self, style_guide, parent=None):
         super().__init__(parent)
 
         info_view_style = style_guide.get("info view", {})

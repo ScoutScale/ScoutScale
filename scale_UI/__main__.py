@@ -7,11 +7,11 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from yaml import safe_load
 from datetime import datetime
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QSize, QCoreApplication
+from PyQt5.QtGui import QFont, QIcon, QRegion
+from PyQt5.QtCore import Qt, QSize, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, 
                              QVBoxLayout, QHBoxLayout, QWidget, QLabel, 
-                             QDialog)
+                             QDialog, QFrame)
 
 from _views.configuration_view import ConfigurationWindow
 from _views.capture_view import CaptureWindow
@@ -19,7 +19,150 @@ from _views.calibrate_view import CalibrateWindow
 from _views.tare_view import TareWindow
 from _views.info_view import InfoWindow
 from _views.qr_code_view import QRCodeWindow
+from _views.confirm_action_view import ConfirmWindow
+from _views.message_view import MessageWindow
 from _serial.serial_thread import SerialReaderThread
+
+class SideMenu(QFrame):
+    delete_last_entry_signal = pyqtSignal()
+    generate_qr_code_signal = pyqtSignal()
+    show_check_list_signal = pyqtSignal()
+    show_configuration_menu_signal = pyqtSignal()
+
+    def __init__(self, style_guide):
+        super().__init__()
+
+        self.style_guide = style_guide
+
+        menu_buttons = style_guide.get("main view", {}).get("header", {}).get("buttons", {}).get("menu", {}).get("buttons", {})
+
+        self.checklist_button_label = menu_buttons.get("checklist", {}).get("label")
+        self.checklist_button_label_font = menu_buttons.get("checklist", {}).get("label font")
+        self.checklist_button_label_text_size = menu_buttons.get("checklist", {}).get("label text size")
+        self.checklist_button_label_color = menu_buttons.get("checklist", {}).get("label color")
+        self.checklist_button_padding = menu_buttons.get("checklist", {}).get("padding")
+        self.checklist_button_text_alignment = menu_buttons.get("checklist", {}).get("text alignment")
+        self.checklist_button_width = menu_buttons.get("checklist", {}).get("width")
+        self.checklist_button_height = menu_buttons.get("checklist", {}).get("height")
+
+        self.delete_last_entry_button_label = menu_buttons.get("delete entry", {}).get("label")
+        self.delete_last_entry_button_label_font = menu_buttons.get("delete entry", {}).get("label font")
+        self.delete_last_entry_button_label_text_size = menu_buttons.get("delete entry", {}).get("label text size")
+        self.delete_last_entry_button_label_color = menu_buttons.get("delete entry", {}).get("label color")
+        self.delete_last_entry_button_padding = menu_buttons.get("delete entry", {}).get("padding")
+        self.delete_last_entry_button_text_alignment = menu_buttons.get("delete entry", {}).get("text alignment")
+        self.delete_last_entry_button_width = menu_buttons.get("delete entry", {}).get("width")
+        self.delete_last_entry_button_height = menu_buttons.get("delete entry", {}).get("height")
+
+        self.qr_code_button_image_location = menu_buttons.get("qr code", {}).get("image", {}).get("location")
+        self.qr_code_button_image_width = menu_buttons.get("qr code", {}).get("image", {}).get("width")
+        self.qr_code_button_image_height = menu_buttons.get("qr code", {}).get("image", {}).get("height")
+        self.qr_code_button_width = menu_buttons.get("qr code", {}).get("width")
+        self.qr_code_button_height = menu_buttons.get("qr code", {}).get("height")
+        self.qr_code_button_border = menu_buttons.get("qr code", {}).get("border")
+
+        self.settings_button_label = menu_buttons.get("settings", {}).get("label")
+        self.settings_button_label_font = menu_buttons.get("settings", {}).get("label font")
+        self.settings_button_label_text_size = menu_buttons.get("settings", {}).get("label text size")
+        self.settings_button_label_color = menu_buttons.get("settings", {}).get("label color")
+        self.settings_button_padding = menu_buttons.get("settings", {}).get("padding")
+        self.settings_button_text_alignment = menu_buttons.get("settings", {}).get("text alignment")
+        self.settings_button_width = menu_buttons.get("settings", {}).get("width")
+        self.settings_button_height = menu_buttons.get("settings", {}).get("height")
+
+        self.exit_button_label = menu_buttons.get("exit", {}).get("label")
+        self.exit_button_label_font = menu_buttons.get("exit", {}).get("label font")
+        self.exit_button_label_text_size = menu_buttons.get("exit", {}).get("label text size")
+        self.exit_button_label_color = menu_buttons.get("exit", {}).get("label color")
+        self.exit_button_color = menu_buttons.get("exit", {}).get("color")
+        self.exit_button_padding = menu_buttons.get("exit", {}).get("padding")
+        self.exit_button_text_alignment = menu_buttons.get("exit", {}).get("text alignment")
+        self.exit_button_width = menu_buttons.get("exit", {}).get("width")
+        self.exit_button_height = menu_buttons.get("exit", {}).get("height")
+
+
+        self.initUI()
+
+    def initUI(self):
+        layout = QVBoxLayout()
+        layout.setSpacing(6)
+
+        settings_button_font = QFont(self.settings_button_label_font, self.settings_button_label_text_size)
+        settings_button_font.setWeight(QFont.Bold)
+
+
+        self.settings_button = QPushButton(self.settings_button_label)
+        self.settings_button.setFont(settings_button_font)
+        self.settings_button.setStyleSheet(F"""
+                                            color: {self.settings_button_label_color}; 
+                                            padding-top: {self.settings_button_padding}; 
+                                            text-align: {self.settings_button_text_alignment};""")
+        self.settings_button.setFlat(True)
+        self.settings_button.setFixedSize(QSize(self.settings_button_width, self.settings_button_height)) 
+        self.settings_button.clicked.connect(self.show_configuration_menu_signal.emit)
+        layout.addWidget(self.settings_button, alignment=Qt.AlignCenter)
+
+
+        checklist_button_font = QFont(self.checklist_button_label_font, self.checklist_button_label_text_size)
+        checklist_button_font.setWeight(QFont.Bold)
+
+        self.checklist_button = QPushButton(self.checklist_button_label)
+        self.checklist_button.setFont(checklist_button_font)
+        self.checklist_button.setStyleSheet(F"""
+                                            color: {self.checklist_button_label_color}; 
+                                            padding-top: {self.checklist_button_padding}; 
+                                            text-align: {self.checklist_button_text_alignment};""")
+        self.checklist_button.setFlat(True)
+        self.checklist_button.setFixedSize(QSize(self.checklist_button_width, self.checklist_button_height)) 
+        self.checklist_button.clicked.connect(self.show_check_list_signal.emit)
+        layout.addWidget(self.checklist_button, alignment=Qt.AlignCenter)
+
+        self.qr_button = QPushButton()
+        self.qr_button.setIcon(QIcon(self.qr_code_button_image_location)) 
+        self.qr_button.setIconSize(QSize(self.qr_code_button_image_width, self.qr_code_button_image_height))
+        self.qr_button.setFixedSize(QSize(self.qr_code_button_width, self.qr_code_button_height))
+        self.qr_button.setStyleSheet(f"border: {self.qr_code_button_border};")
+        self.qr_button.clicked.connect(self.generate_qr_code_signal.emit)
+        layout.addWidget(self.qr_button, alignment=Qt.AlignCenter)
+
+        delete_last_entry_button_font = QFont(self.delete_last_entry_button_label_font, self.delete_last_entry_button_label_text_size)
+        delete_last_entry_button_font.setWeight(QFont.Bold)
+
+        self.delete_last_entry_button = QPushButton(self.delete_last_entry_button_label)
+        self.delete_last_entry_button.setFont(delete_last_entry_button_font)
+        self.delete_last_entry_button.setStyleSheet(F"""
+                                            color: {self.delete_last_entry_button_label_color}; 
+                                            padding-top: {self.delete_last_entry_button_padding}; 
+                                            text-align: {self.delete_last_entry_button_text_alignment};""")
+        self.delete_last_entry_button.setFlat(True)
+        self.delete_last_entry_button.setFixedSize(QSize(self.delete_last_entry_button_width, self.delete_last_entry_button_height)) 
+        self.delete_last_entry_button.clicked.connect(self.delete_last_entry_signal.emit)
+        layout.addWidget(self.delete_last_entry_button, alignment=Qt.AlignCenter)
+
+        layout.addStretch()
+
+        exit_button_font = QFont(self.exit_button_label_font, self.exit_button_label_text_size)
+        exit_button_font.setWeight(QFont.Bold)
+
+        self.exit_button = QPushButton(self.exit_button_label)
+        self.exit_button.setFont(exit_button_font)
+        self.exit_button.setStyleSheet(F"""
+                                        background-color: {self.exit_button_color};
+                                        color: {self.exit_button_label_color}; 
+                                        padding-top: {self.exit_button_padding}; 
+                                        text-align: {self.exit_button_text_alignment};""")
+        self.exit_button.setFlat(True)
+        self.exit_button.setFixedSize(QSize(self.exit_button_width, self.exit_button_height)) 
+        self.exit_button.clicked.connect(self.exit_button_pressed)
+        layout.addWidget(self.exit_button, alignment=Qt.AlignCenter)
+
+        self.setLayout(layout)
+        self.hide()
+
+    def exit_button_pressed(self):
+        confirm_window = ConfirmWindow(self.style_guide, "end program")
+        if confirm_window.exec_():
+            QCoreApplication.quit()
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -29,6 +172,8 @@ class MainWindow(QMainWindow):
         self.retrieve_style_guide()
 
         self.get_main_window_style_guide_parameters()
+
+        self.prev_capture_available = False
 
         self.weight = 0
 
@@ -54,7 +199,6 @@ class MainWindow(QMainWindow):
     def retrieve_style_guide(self):
         with open("_config/style_guide.yaml", 'r') as file:
             self.style_guide = safe_load(file)
-
 
     def connect_signals(self):
 
@@ -110,13 +254,6 @@ class MainWindow(QMainWindow):
         self.scoutscale_button_height = scoutscale_button_info.get("height", {})
         self.scoutscale_button_border = scoutscale_button_info.get("border", {})
 
-        self.qr_code_button_image_location = header_buttons.get("qr code", {}).get("image", {}).get("location")
-        self.qr_code_button_image_width = header_buttons.get("qr code", {}).get("image", {}).get("width")
-        self.qr_code_button_image_height = header_buttons.get("qr code", {}).get("image", {}).get("height")
-        self.qr_code_button_width = header_buttons.get("qr code", {}).get("width")
-        self.qr_code_button_height = header_buttons.get("qr code", {}).get("height")
-        self.qr_code_button_border = header_buttons.get("qr code", {}).get("border")
-
         self.menu_button_label = header_buttons.get("menu", {}).get("label")
         self.menu_button_label_font = header_buttons.get("menu", {}).get("label font")
         self.menu_button_label_text_size = header_buttons.get("menu", {}).get("label text size")
@@ -164,8 +301,11 @@ class MainWindow(QMainWindow):
         self.centralWidget = QWidget()
         self.setCentralWidget(self.centralWidget)
         self.setWindowTitle(self.main_window_title)
-        self.centralWidget.setStyleSheet(f"background-color: {self.main_window_color};")  
-        layout = QVBoxLayout()
+        self.centralWidget.setStyleSheet(f"background-color: {self.main_window_color};") 
+
+        layout = QHBoxLayout()
+
+        main_view = QVBoxLayout()
 
         row1 = QHBoxLayout()
 
@@ -187,33 +327,29 @@ class MainWindow(QMainWindow):
 
         row1.addStretch()
 
-        self.qr_button = QPushButton()
-        self.qr_button.setIcon(QIcon(self.qr_code_button_image_location)) 
-        self.qr_button.setIconSize(QSize(self.qr_code_button_image_width, self.qr_code_button_image_height))
-        self.qr_button.setFixedSize(QSize(self.qr_code_button_width, self.qr_code_button_height))
-        self.qr_button.setStyleSheet(f"border: {self.qr_code_button_border};")
-        self.qr_button.clicked.connect(self.generate_qr_code)
-        row1.addWidget(self.qr_button)
-
         hamburger_button_font = QFont(self.menu_button_label_font, self.menu_button_label_text_size)
         hamburger_button_font.setWeight(QFont.Bold)
 
-        self.hamburger_button = QPushButton("☰")
+        self.hamburger_button = QPushButton(self.menu_button_label)
         self.hamburger_button.setFont(hamburger_button_font)
-        self.hamburger_button.setStyleSheet("color: black; padding-top: -10px; text-align: center;")
+        self.hamburger_button.setStyleSheet(F"""
+                                            color: {self.menu_button_label_color}; 
+                                            padding-top: {self.menu_button_padding}; 
+                                            text-align: {self.menu_button_text_alignment};""")
         self.hamburger_button.setFlat(True)
         self.hamburger_button.setFixedSize(QSize(self.menu_button_width, self.menu_button_height)) 
-        self.hamburger_button.clicked.connect(self.show_configuration_menu)
+        #self.hamburger_button.clicked.connect(self.show_configuration_menu)
+        self.hamburger_button.clicked.connect(self.toggle_side_menu)
         row1.addWidget(self.hamburger_button)
 
-        layout.addLayout(row1)
+        main_view.addLayout(row1)
 
         self.weight_display = QLabel(self.current_weight_label_text)
         self.weight_display_font = QFont(self.current_weight_label_font)
         self.weight_display_font.setBold(True)
         self.weight_display.setFont(self.weight_display_font)
         self.weight_display.setStyleSheet(f"color: {self.current_weight_label_text_color};") 
-        layout.addWidget(self.weight_display, alignment=Qt.AlignCenter)
+        main_view.addWidget(self.weight_display, alignment=Qt.AlignCenter)
 
         self.capture_button = QPushButton(self.capture_button_label)
         self.capture_button_font = QFont(self.capture_button_font_style)
@@ -225,7 +361,7 @@ class MainWindow(QMainWindow):
                                           border: {self.capture_button_border}; 
                                           border-radius: {self.capture_button_border_radius}; }}""")
         self.capture_button.clicked.connect(self.capture_scale_output)
-        layout.addWidget(self.capture_button)
+        main_view.addWidget(self.capture_button)
 
         self.tare_button = QPushButton(self.tare_button_label)
         self.tare_button_font = QFont(self.tare_button_font_style)
@@ -237,7 +373,7 @@ class MainWindow(QMainWindow):
                                        border: {self.tare_button_border}; 
                                        border-radius: {self.tare_button_border_radius}; }}""")
         self.tare_button.clicked.connect(self.tare_scale)
-        layout.addWidget(self.tare_button)
+        main_view.addWidget(self.tare_button)
 
         self.calibrate_button = QPushButton(self.calibrate_button_label)
         self.calibrate_button_font = QFont(self.calibrate_button_font_style)
@@ -249,12 +385,30 @@ class MainWindow(QMainWindow):
                                 border: {self.calibrate_button_border}; 
                                 border-radius: {self.calibrate_button_border_radius}; }}""")
         self.calibrate_button.clicked.connect(self.calibrate_scale)
-        layout.addWidget(self.calibrate_button)
+        main_view.addWidget(self.calibrate_button)
+
+        layout.addLayout(main_view)
 
         self.centralWidget.setLayout(layout)
 
+        self.side_menu = SideMenu(self.style_guide)
+        self.side_menu.delete_last_entry_signal.connect(self.delete_previous_capture)
+        self.side_menu.show_check_list_signal.connect(self.show_configuration_menu)
+        self.side_menu.generate_qr_code_signal.connect(self.generate_qr_code)
+        self.side_menu.show_configuration_menu_signal.connect(self.show_configuration_menu)
+        self.side_menu_layout = QVBoxLayout()
+        self.side_menu_layout.addWidget(self.side_menu)
+        self.side_menu_layout.setAlignment(Qt.AlignRight)
+        self.centralWidget.layout().addLayout(self.side_menu_layout)
+
         if not self.main_window_auto_size:
             self.resize(self.main_window_width, self.main_window_height)
+
+    def toggle_side_menu(self):
+        if self.side_menu.isVisible():
+            self.side_menu.hide()
+        else:
+            self.side_menu.show()
 
     def show_configuration_menu(self):
         csv_file_name = self.csv_file.replace(self.config_parameters["Local Data Collection"]["folder"], "")
@@ -264,6 +418,7 @@ class MainWindow(QMainWindow):
         config_window.exec_()
     
     def connect_to_output_file(self, file_name):
+        self.prev_capture_available = False
 
         date_header = self.config_parameters["Local Data Collection"]["labels"]["date"]
         weight_header = self.config_parameters["Local Data Collection"]["labels"]["weight"]
@@ -284,7 +439,7 @@ class MainWindow(QMainWindow):
 
 
     def show_information_page(self):
-        self.InfoWindow = InfoWindow(self.style_guide, self.config_parameters)
+        self.InfoWindow = InfoWindow(self.style_guide)
         self.InfoWindow.exec_()
 
     def tare_scale(self):
@@ -300,11 +455,10 @@ class MainWindow(QMainWindow):
     def calibrate_scale(self):
         self.serial_thread.calibrate_signal.emit() 
         calibrate_window = CalibrateWindow(self.style_guide, self.config_parameters, self.units, self.serial_thread)
-        calibrate_window.exec_()      
+        calibrate_window.exec_()  
 
     def capture_scale_output(self):
-
-        tempWeight = self.weight
+        temp_weight = self.weight
         capture_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         date_header = self.config_parameters["Local Data Collection"]["labels"]["date"]
@@ -312,23 +466,55 @@ class MainWindow(QMainWindow):
         unit_header = self.config_parameters["Local Data Collection"]["labels"]["units"]
         zone_header = self.config_parameters["Local Data Collection"]["labels"]["zone"]
 
-        capture_window = CaptureWindow(self.style_guide, tempWeight, self.units)
+        capture_window = CaptureWindow(self.style_guide, temp_weight, self.units)
         if capture_window.exec_() == QDialog.Accepted:
             zone = capture_window.text_box.text()
             
-            if zone != "" and tempWeight != 0:
-                pd.DataFrame([[capture_date, tempWeight, self.units, zone]], columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, mode='a', header=False, index=False)
-                self.send_to_backend(tempWeight, zone) 
+            if zone != "" and temp_weight != 0:
+                pd.DataFrame([[capture_date, temp_weight, self.units, zone]], columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, mode='a', header=False, index=False)
+                self.send_to_backend(temp_weight, zone) 
+                self.prev_capture_available = True
+    
+    def delete_previous_capture(self):
+        confirm_window = ConfirmWindow(self.style_guide, "delete entry")
+        if confirm_window.exec_():
+            if self.prev_capture_available:
+                try:
+                    df = pd.read_csv(self.csv_file)
+                except FileNotFoundError:
+                    df = pd.DataFrame()
+
+                if not df.empty:
+                    previous_entry = df.iloc[-1]
+                    
+                    df = df.drop(df.index[-1])
+                    df.to_csv(self.csv_file, index=False)
+
+                    if self.uploading:
+                        db = firestore.client()
+                        data = {
+                        self.config_parameters["Firebase"]["labels"]["weight"] : float(-previous_entry[1]),
+                        self.config_parameters["Firebase"]["labels"]["units"] : previous_entry[2],
+                        self.config_parameters["Firebase"]["labels"]["date"] : firestore.SERVER_TIMESTAMP,
+                        self.config_parameters["Firebase"]["labels"]["zone"] : int(previous_entry[3])
+                        }
+                        doc_ref = db.collection(self.config_parameters["Firebase"]["collection name"]).document()
+                        doc_ref.set(data)
+                    self.prev_capture_available = False
+
+            else:
+                window = MessageWindow(self.style_guide, "no prev entry")
+                window.exec()
 
     def update_weight(self, weight):
         self.weight = weight
         self.update_weight_display()
 
     def update_units(self, units):
-        self.units = units     
+        self.units = units    
 
     def update_weight_display(self):
-         self.weight_display.setText(f"{self.current_weight_label_text} {self.weight} {self.units}")
+        self.weight_display.setText(f"{self.current_weight_label_text} {self.weight} {self.units}")
 
     def send_to_backend(self, weight, zone):
         if self.uploading:

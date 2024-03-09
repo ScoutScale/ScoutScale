@@ -39,14 +39,6 @@ class ConfigurationWindow(QDialog):
         self.output_file_text_color = dialog_styles.get("output file", {}).get("text color")
         self.output_file_text_size = dialog_styles.get("output file", {}).get("text size")
 
-        self.exit_button_label = button_styles.get("exit", {}).get("label")
-        self.exit_button_color = button_styles.get("exit", {}).get("color")
-        self.exit_button_font = button_styles.get("exit", {}).get("font")
-        self.exit_button_text_color = button_styles.get("exit", {}).get("text color")
-        self.exit_button_text_size = button_styles.get("exit", {}).get("text size")
-        self.exit_button_border = button_styles.get("exit", {}).get("border")
-        self.exit_button_border_radius = button_styles.get("exit", {}).get("border radius")
-
         self.radio_button_ports_font = button_styles.get("radio buttons", {}).get("ports", {}).get("font")
         self.radio_button_ports_text_color = button_styles.get("radio buttons", {}).get("ports", {}).get("text color")
         self.radio_button_ports_text_size = button_styles.get("radio buttons", {}).get("ports", {}).get("text size")
@@ -103,16 +95,6 @@ class ConfigurationWindow(QDialog):
         self.layout.addWidget(self.file_combo_box)
 
         self.layout.addStretch()
-
-        kill_button = QPushButton(self.exit_button_label)
-        kill_button.setFont(QFont(self.exit_button_font, self.exit_button_text_size))
-        kill_button.setStyleSheet(f"""QPushButton {{
-                                  background-color: {self.exit_button_color}; 
-                                  color: {self.exit_button_text_color}; 
-                                  border: {self.exit_button_border}; 
-                                  border-radius: {self.exit_button_border_radius}; }}""")
-        kill_button.clicked.connect(QCoreApplication.quit)
-        self.layout.addWidget(kill_button)
 
         if not self.configuration_window_auto_size:
             self.resize(self.configuration_window_width, self.configuration_window_height)

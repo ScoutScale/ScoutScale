@@ -16,18 +16,17 @@
 
 ## Scale UI
 ### To Do:
-- Adjust how config parameters are handled in different views
-- Move more parameters into configuration yaml file
-- Restructure configuration yaml file
 - Build information view
-- Refine Configure window
 - Add debug view to allow for load value views for each individual leg
     - Requires firmware adjustments
-- Connect to an existing CSV file
-- End program confirmation view
-- Start up checklist
+    - Checklist Items
+        - Verify that data uploading is set to true
+        - Connect Serial Port
+        - Verify Output File
+        - Calibrate
+- Start up checklist (use info view?)
 - default values for specific style guide items (if they are needed)
-- units sent to database
+
 
 
 

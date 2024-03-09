@@ -15,14 +15,6 @@ main view:
         width: 75
         height: 75
         border: none
-      qr code:
-        image:
-          location: _resources/QR_icon.png
-          width: 32
-          height: 32
-        width: 45
-        height: 45
-        border: none
       menu:
         label: ☰
         label font: Gill Sans
@@ -32,6 +24,52 @@ main view:
         text alignment: center
         width: 45
         height: 45
+        buttons:
+          checklist:
+            label: ☑
+            label font: Gill Sans
+            label text size: 48
+            label color: black
+            padding: -10px
+            text alignment: center
+            width: 28
+            height: 26
+          delete entry: 
+            label: ✗
+            label font: Gill Sans
+            label text size: 48
+            label color: black
+            padding: 0px
+            text alignment: center
+            width: 30
+            height: 27
+          qr code:
+            image:
+              location: _resources/QR_icon.png
+              width: 32
+              height: 32
+            width: 30
+            height: 30
+            border: none
+          settings:
+            label: ⚙
+            label font: Gill Sans
+            label text size: 48
+            label color: black
+            padding: -5px
+            text alignment: center
+            width: 30
+            height: 33 
+          exit:
+            label: ⓧ
+            label font: Gill Sans
+            label text size: 28
+            label color: red
+            color: rgb(254,248,234)
+            padding: 0px
+            text alignment: center
+            width: 30
+            height: 30
     title: ScoutScale
     font: Gill Sans
     text size: 56
@@ -156,14 +194,6 @@ configuration view:
       text color: white
       text size: 20
   buttons:
-    exit:
-      label: Exit Program
-      color: rgb(210, 54, 54)
-      font: Arial
-      text color: white
-      text size: 16
-      border: 2px solid black
-      border radius: 10px
     radio buttons:
       ports:
         font: Arial
@@ -173,6 +203,40 @@ configuration view:
         font: Arial
         text color: white
         text size: 16
+
+confirm action view:
+  window:
+    title: 
+    color: rgb(46,46,46)
+    width: 300
+    height: 300
+    auto size: True
+  dialog:
+    labels:
+      delete entry: Are you sure you would like to remove the previous entry?
+      end program: Are you sure you would like to terminate the program?
+    font: Arial
+    text color: white
+    text size: 20
+    width: 300
+    height: 60
+  buttons:
+    confirm:
+      label: Confirm
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+    cancel:
+      label: Cancel
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
 
 info view:
   window:
@@ -213,6 +277,31 @@ known weight view:
   buttons:
     confirm:
       label: Confirm
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+
+message view:
+  window:
+    title: 
+    color: rgb(46,46,46)
+    width: 100
+    height: 100
+    auto size: True
+  dialog: 
+    labels:
+      no prev entry: Cannot remove previous entry.
+    font: Arial
+    text size: 20
+    text color: white
+    width: 300
+    height: 40
+  buttons:
+    ok:
+      label: OK
       color: rgb(54, 115, 210)
       font: Arial
       text color: white
