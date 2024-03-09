@@ -19,7 +19,7 @@ Local Data Collection:
   new file creation mode: False
   
 Serial:
-  baudrate:
+  baudrate: 57600
   mock ports:
   - /dev/ttyUSB0
   - /dev/ttyUSB1
