@@ -170,6 +170,20 @@ capture view:
       border: 2px solid black
       border radius: 10px
 
+checklist:
+  window:
+    title: Startup Checklist
+    color: rgb(254,248,234)
+    width: 400
+    height: 400
+    offset: 220
+    auto size: True
+    font: Arial
+    text color: black
+  text box:
+    width: 350
+    height: 400
+
 configuration view:
   window:
     title: Menu
@@ -313,6 +327,9 @@ qr code view:
   window:
     title: Scout Scale Web Application Code
     color: white
+  qr:
+    width: 500
+    height: 500
     
 tare view:
   window: 

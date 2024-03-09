@@ -7,11 +7,11 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from yaml import safe_load
 from datetime import datetime
-from PyQt5.QtGui import QFont, QIcon, QRegion
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QSize, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, 
                              QVBoxLayout, QHBoxLayout, QWidget, QLabel, 
-                             QDialog, QFrame)
+                             QDialog, QFrame, QDesktopWidget)
 
 from _views.configuration_view import ConfigurationWindow
 from _views.capture_view import CaptureWindow
@@ -21,6 +21,7 @@ from _views.info_view import InfoWindow
 from _views.qr_code_view import QRCodeWindow
 from _views.confirm_action_view import ConfirmWindow
 from _views.message_view import MessageWindow
+from _views.check_list_view import ChecklistWindow
 from _serial.serial_thread import SerialReaderThread
 
 class SideMenu(QFrame):
@@ -392,7 +393,7 @@ class MainWindow(QMainWindow):
 
         self.side_menu = SideMenu(self.style_guide)
         self.side_menu.delete_last_entry_signal.connect(self.delete_previous_capture)
-        self.side_menu.show_check_list_signal.connect(self.open_checklist)
+        self.side_menu.show_check_list_signal.connect(self.toggle_checklist)
         self.side_menu.generate_qr_code_signal.connect(self.generate_qr_code)
         self.side_menu.show_configuration_menu_signal.connect(self.show_configuration_menu)
         self.side_menu_layout = QVBoxLayout()
@@ -400,8 +401,12 @@ class MainWindow(QMainWindow):
         self.side_menu_layout.setAlignment(Qt.AlignRight)
         self.centralWidget.layout().addLayout(self.side_menu_layout)
 
+        self.checklist = ChecklistWindow(self.style_guide, self)
+
         if not self.main_window_auto_size:
             self.resize(self.main_window_width, self.main_window_height)
+        
+        self.center_on_screen()
 
     def toggle_side_menu(self):
         if self.side_menu.isVisible():
@@ -528,7 +533,7 @@ class MainWindow(QMainWindow):
             doc_ref.set(data)
 
     def generate_qr_code(self):
-        qr_code_menu = QRCodeWindow(self. style_guide, self.config_parameters["web app URL"])
+        qr_code_menu = QRCodeWindow(self. style_guide, self.config_parameters["web app URL"], self)
         qr_code_menu.exec_()
 
     def resizeEvent(self, event):
@@ -544,8 +549,17 @@ class MainWindow(QMainWindow):
         self.calibrate_button.setFont(self.calibrate_button_font)
         super().resizeEvent(event)
 
-    def open_checklist(self):
-        pass
+    def toggle_checklist(self):
+        if self.checklist.isVisible():
+            self.checklist.hide()
+        else:
+            self.checklist.show()
+        
+    def center_on_screen(self):
+        window_geometry = self.frameGeometry()
+        center_point = QDesktopWidget().availableGeometry().center()
+        window_geometry.moveCenter(center_point)
+        self.move(window_geometry.topLeft())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

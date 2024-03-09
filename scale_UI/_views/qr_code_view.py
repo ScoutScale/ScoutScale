@@ -11,16 +11,16 @@ class QRCodeWindow(QDialog):
 
         self.window_title = style_guide["qr code view"]["window"]["title"]
         self.window_color = style_guide["qr code view"]["window"]["color"]
+        self.window_width = style_guide["qr code view"]["qr"]["width"]
+        self.window_height = style_guide["qr code view"]["qr"]["height"]
 
         self.init_UI()
 
     def init_UI(self):
         self.setWindowTitle(self.window_title)
         self.setStyleSheet(f"background-color: {self.window_color};")
-        
-        window_size = self.size()
 
-        max_qr_size = min(window_size.width(), window_size.height())
+        max_qr_size = min(self.window_width, self.window_height)
         box_size = max_qr_size // 25 
         
         qr_image = self.generate_qr_code_image(box_size)
