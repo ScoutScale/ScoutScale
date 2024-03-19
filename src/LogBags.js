@@ -10,6 +10,8 @@ import { useGeolocated } from "react-geolocated";
 export const LogBags = ({ authCode }) => {
   const [authLoading, setAuthLoading] = useState(false);
   const [isChecked, setChecked] = useState(false);
+  const [numBags, setnumBags] = useState('');
+  const [zoneNum, setzoneNum] = useState('');
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
   useGeolocated({
@@ -23,6 +25,36 @@ export const LogBags = ({ authCode }) => {
   const zoneRef = useRef();
   const ref = collection(firestore, "React App");
   const valueChange = () => {setChecked(!isChecked);};
+
+  
+  //Increment/Decrement Button Stuff
+  const handleNumBagChange = () => {
+    const temp = bagRef.current.value.trim();
+    if (temp === '' || !isNaN(parseInt(temp))) {
+      setnumBags(temp === '' ? '' : parseInt(temp));
+    }
+  };
+
+  //Makes Sure zone is int
+  const handleZoneChange = () => {
+    const temp = zoneRef.current.value.trim();
+    if (temp === '' || !isNaN(parseInt(temp))) {
+      setzoneNum(temp === '' ? '' : parseInt(temp));
+    }
+  };
+
+  const incrementCount = () => {
+    if (numBags === '' || numBags === 0 || !isNaN(numBags)) {
+      setnumBags((preValue) => preValue === '' ? 1 : preValue + 1);
+    }
+  };
+
+  const decrementCount = () => {
+    if (numBags === '' || numBags > 0) {
+      setnumBags((preValue) => preValue === '' ? 0 : preValue - 1);
+    }
+  };
+
 
   const logBags = () => {
   if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value) > 0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value) > 0) {
@@ -89,8 +121,14 @@ export const LogBags = ({ authCode }) => {
             </div>
             <div className="flex items-center flex-col flex items-center mt-10">
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
-            <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-10" ref={bagRef} placeholder="bags"/>
-            <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone"/>
+            <div className = "text-center w-full">
+              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2" >-</button>
+              <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-10" ref={bagRef} placeholder="bags" 
+              value={numBags} onChange={handleNumBagChange}/>
+              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2">+</button>
+            </div>
+            <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
+             value={zoneNum}/>
             <div className="text-center">
               <label> 
                 Is this a correction to the previous entry?&nbsp;&nbsp;
