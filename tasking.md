@@ -18,9 +18,13 @@
 ## Scale UI
 ### To Do:
 - Build information view
-- Add debug view to allow for load value views for each individual leg
+- Add debug view to allow for load value views for each individual leg - Kyle
+    - new output delimited with ":"
+    - Add the 4 values together to get total weight
+    - open debug view as separate window
     - Requires firmware adjustments
-    - Checklist Items
+    - 
+- Checklist Items
         - Verify that data uploading is set to true
         - Connect Serial Port
         - Verify Output File
@@ -35,7 +39,8 @@
     - allow for two seperate scale systems
     - Maybe pull device ID
 - Resolve Requirments.txt file
-- Known weight checker display
+- Known weight checker display - Kyle
+    - make window display on side and show the expected weight in debug mode
     - allows the user to place a known weight along with the unknown to verify that the reading is accurate
     - e.g. is your reading is 100lb and you add a 25lb weight your output should change to reflect 125
     - More of a debugging task but wanted to capture idea

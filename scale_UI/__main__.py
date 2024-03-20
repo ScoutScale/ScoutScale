@@ -23,9 +23,11 @@ from _views.confirm_action_view import ConfirmWindow
 from _views.message_view import MessageWindow
 from _views.check_list_view import ChecklistWindow
 from _serial.serial_thread import SerialReaderThread
+from _views.debug_view import DebugWindow
 
 class SideMenu(QFrame):
     delete_last_entry_signal = pyqtSignal()
+    debug_signal = pyqtSignal()
     generate_qr_code_signal = pyqtSignal()
     show_check_list_signal = pyqtSignal()
     show_configuration_menu_signal = pyqtSignal()
@@ -71,6 +73,16 @@ class SideMenu(QFrame):
         self.settings_button_width = menu_buttons.get("settings", {}).get("width")
         self.settings_button_height = menu_buttons.get("settings", {}).get("height")
 
+        self.debug_button_label = menu_buttons.get("debug", {}).get("label")
+        self.debug_button_label_font = menu_buttons.get("debug", {}).get("label font")
+        self.debug_button_label_text_size = menu_buttons.get("debug", {}).get("label text size")
+        self.debug_button_label_color = menu_buttons.get("debug", {}).get("label color")
+        self.debug_button_color = menu_buttons.get("debug", {}).get("color")
+        self.debug_button_padding = menu_buttons.get("debug", {}).get("padding")
+        self.debug_button_text_alignment = menu_buttons.get("debug", {}).get("text alignment")
+        self.debug_button_width = menu_buttons.get("debug", {}).get("width")
+        self.debug_button_height = menu_buttons.get("debug", {}).get("height")
+
         self.exit_button_label = menu_buttons.get("exit", {}).get("label")
         self.exit_button_label_font = menu_buttons.get("exit", {}).get("label font")
         self.exit_button_label_text_size = menu_buttons.get("exit", {}).get("label text size")
@@ -80,7 +92,6 @@ class SideMenu(QFrame):
         self.exit_button_text_alignment = menu_buttons.get("exit", {}).get("text alignment")
         self.exit_button_width = menu_buttons.get("exit", {}).get("width")
         self.exit_button_height = menu_buttons.get("exit", {}).get("height")
-
 
         self.initUI()
 
@@ -139,6 +150,22 @@ class SideMenu(QFrame):
         self.delete_last_entry_button.setFixedSize(QSize(self.delete_last_entry_button_width, self.delete_last_entry_button_height)) 
         self.delete_last_entry_button.clicked.connect(self.delete_last_entry_signal.emit)
         layout.addWidget(self.delete_last_entry_button, alignment=Qt.AlignCenter)
+
+        debug_button_font = QFont(self.debug_button_label_font,
+                                  self.debug_button_label_text_size)
+        debug_button_font.setWeight(QFont.Bold)
+
+        self.debug_button = QPushButton(self.debug_button_label)
+        self.debug_button.setFont(debug_button_font)
+        self.debug_button.setStyleSheet(F"""
+                                                    color: {self.debug_button_label_color}; 
+                                                    padding-top: {self.debug_button_padding}; 
+                                                    text-align: {self.debug_button_text_alignment};""")
+        self.debug_button.setFlat(True)
+        self.debug_button.setFixedSize(
+            QSize(self.debug_button_width, self.debug_button_height))
+        self.debug_button.clicked.connect(self.debug_signal.emit)
+        layout.addWidget(self.debug_button, alignment=Qt.AlignCenter)
 
         layout.addStretch()
 
@@ -394,6 +421,7 @@ class MainWindow(QMainWindow):
         self.side_menu = SideMenu(self.style_guide)
         self.side_menu.delete_last_entry_signal.connect(self.delete_previous_capture)
         self.side_menu.show_check_list_signal.connect(self.toggle_checklist)
+        self.side_menu.debug_signal.connect(self.toggle_debug)
         self.side_menu.generate_qr_code_signal.connect(self.generate_qr_code)
         self.side_menu.show_configuration_menu_signal.connect(self.show_configuration_menu)
         self.side_menu_layout = QVBoxLayout()
@@ -402,6 +430,9 @@ class MainWindow(QMainWindow):
         self.centralWidget.layout().addLayout(self.side_menu_layout)
 
         self.checklist = ChecklistWindow(self.style_guide, self)
+
+        self.debug = DebugWindow(self.style_guide, self)
+        self.debug.hide()
 
         if not self.main_window_auto_size:
             self.resize(self.main_window_width, self.main_window_height)
@@ -510,8 +541,8 @@ class MainWindow(QMainWindow):
                 window = MessageWindow(self.style_guide, "no prev entry")
                 window.exec()
 
-    def update_weight(self, weight):
-        self.weight = weight
+    def update_weight(self, weight: str):
+        self.weight = sum([float(split_weight) for split_weight in weight.split(":")])
         self.update_weight_display()
 
     def update_units(self, units):
@@ -554,6 +585,12 @@ class MainWindow(QMainWindow):
             self.checklist.hide()
         else:
             self.checklist.show()
+
+    def toggle_debug(self):
+        if self.debug.isVisible():
+            self.debug.hide()
+        else:
+            self.debug.show()
         
     def center_on_screen(self):
         window_geometry = self.frameGeometry()

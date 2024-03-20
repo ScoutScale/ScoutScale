@@ -35,9 +35,9 @@ main view:
             width: 28
             height: 26
           delete entry: 
-            label: ✗
+            label: ⌫
             label font: Gill Sans
-            label text size: 48
+            label text size: 24
             label color: black
             padding: 0px
             text alignment: center
@@ -59,7 +59,17 @@ main view:
             padding: -5px
             text alignment: center
             width: 30
-            height: 33 
+            height: 33
+          debug:
+            label: 🐞
+            label font: Gill Sans
+            label text size: 28
+            label color: black
+            color: rgb(254,248,234)
+            padding: 0px
+            text alignment: center
+            width: 30
+            height: 30
           exit:
             label: ⓧ
             label font: Gill Sans
@@ -173,6 +183,20 @@ capture view:
 checklist:
   window:
     title: Startup Checklist
+    color: rgb(254,248,234)
+    width: 400
+    height: 400
+    offset: 220
+    auto size: True
+    font: Arial
+    text color: black
+  text box:
+    width: 350
+    height: 400
+
+debug:
+  window:
+    title: Debug
     color: rgb(254,248,234)
     width: 400
     height: 400

@@ -37,7 +37,8 @@ class MockSerial:
             send_value = "x"
             self.calibrate_abort = False
         else:
-            send_value = f"{self.weight}"
+            split_weight = self.weight / 4
+            send_value = f"{split_weight}:{split_weight}:{split_weight}:{split_weight}"
             self.weight += 6.5
         #print(send_value)
         return send_value.encode('utf-8')
