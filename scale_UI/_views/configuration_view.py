@@ -1,5 +1,6 @@
 import serial.tools.list_ports
-from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel, QButtonGroup, QComboBox
+from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel, QButtonGroup, QComboBox, QLineEdit, \
+    QHBoxLayout
 from PyQt5.QtCore import pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QFont
 import os
@@ -8,9 +9,10 @@ import os
 class ConfigurationWindow(QDialog):
 
     change_units_signal = pyqtSignal(str)
+    change_known_weights_signal = pyqtSignal(float)
     change_output_file_signal = pyqtSignal(str)
 
-    def __init__(self, style_guide, config_parameters, default_output_file, units, serial_thread, parent=None):
+    def __init__(self, style_guide, config_parameters, default_output_file, units, known_weight, serial_thread, parent=None):
         super().__init__(parent)
 
         configuration_view_style = style_guide.get("configuration view", {})
@@ -33,6 +35,13 @@ class ConfigurationWindow(QDialog):
         self.units_dialog_font = dialog_styles.get("units", {}).get("font")
         self.units_dialog_text_color = dialog_styles.get("units", {}).get("text color")
         self.units_dialog_text_size = dialog_styles.get("units", {}).get("text size")
+
+        self.known_weight_text_label = dialog_styles.get("known weight", {}).get("text")
+        self.known_weight_font = dialog_styles.get("known weight", {}).get("font")
+        self.known_weight_text_color = dialog_styles.get("known weight", {}).get("text color")
+        self.known_weight_text_size = dialog_styles.get("known weight", {}).get("text size")
+        self.known_weight = known_weight
+        self.known_weight_text = str(known_weight)
 
         self.output_file_dialog_text = dialog_styles.get("output file", {}).get("text")
         self.output_file_font = dialog_styles.get("output file", {}).get("font")
@@ -94,6 +103,19 @@ class ConfigurationWindow(QDialog):
         self.set_default_selected_file()
         self.layout.addWidget(self.file_combo_box)
 
+        known_weight_row = QHBoxLayout()
+        known_weight_label = QLabel(self.known_weight_text_label)
+        known_weight_label.setFont(QFont(self.known_weight_font, self.known_weight_text_size))
+        known_weight_label.setStyleSheet(f"color: {self.known_weight_text_color};")
+        known_weight_row.addWidget(known_weight_label)
+
+        self.known_weight_text_box = QLineEdit()
+        self.known_weight_text_box.setText(self.known_weight_text)
+        self.known_weight_text_box.textChanged.connect(self.set_known_weight)
+        known_weight_row.addWidget(self.known_weight_text_box)
+
+        self.layout.addLayout(known_weight_row)
+
         self.layout.addStretch()
 
         if not self.configuration_window_auto_size:
@@ -150,10 +172,17 @@ class ConfigurationWindow(QDialog):
         self.change_output_file_signal.emit(selected_file)
 
     def set_default_selected_file(self):
-        default_file_name =self.default_output_file
+        default_file_name = self.default_output_file
         index = self.file_combo_box.findText(default_file_name)
         if index != -1:
             self.file_combo_box.setCurrentIndex(index)
+
+    def set_known_weight(self):
+        self.known_weight_text = self.known_weight_text_box.text()
+
+        if self.known_weight_text.isnumeric():
+            self.known_weight = float(self.known_weight_text)
+            self.change_known_weights_signal.emit(self.known_weight)
     
 
 

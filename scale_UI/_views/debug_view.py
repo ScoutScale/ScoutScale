@@ -4,8 +4,10 @@ from yaml import safe_load
 from _serial.serial_thread import SerialReaderThread
 
 class DebugWindow(QDialog):
-    def __init__(self, style_guide, parent=None):
+    def __init__(self, style_guide, units, parent=None):
         super().__init__(parent)
+
+        self.units = units
 
         debug_style = style_guide.get("debug", {})
         window_style = debug_style.get("window", {})
@@ -75,10 +77,10 @@ class DebugWindow(QDialog):
 
     def base_debug_text(self, strings: [str]):
         return f"""
-        <p style="font-size: 24px;">Leg 1: {strings[0]}</p>
-        <p style="font-size: 24px;">Leg 2: {strings[1]}</p>
-        <p style="font-size: 24px;">Leg 3: {strings[2]}</p>
-        <p style="font-size: 24px;">Leg 4: {strings[3]}</p>
+        <p style="font-size: 24px;">Leg 1: {strings[0]} {self.units}</p>
+        <p style="font-size: 24px;">Leg 2: {strings[1]} {self.units}</p>
+        <p style="font-size: 24px;">Leg 3: {strings[2]} {self.units}</p>
+        <p style="font-size: 24px;">Leg 4: {strings[3]} {self.units}</p>
         """
 
 

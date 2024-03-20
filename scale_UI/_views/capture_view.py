@@ -1,10 +1,15 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QLineEdit, QPushButton, QApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
+
 class CaptureWindow(QDialog):
-    def __init__(self, style_guide, captured_weight, units, parent=None):
+    def __init__(self, style_guide, captured_weight, units, debug_mode_is_active: bool, desktop_rect, known_weight, parent=None):
         super().__init__(parent)
+
+        self.debug_mode_is_active = debug_mode_is_active
+        self.desktop_rect = desktop_rect
+        self.known_weight = known_weight
 
         capture_view_style = style_guide.get("capture view", {})
         window_style = capture_view_style.get("window", {})
@@ -21,6 +26,11 @@ class CaptureWindow(QDialog):
         self.weight_dialog_font = dialog_styles.get("weight", {}).get("font")
         self.weight_dialog_text_color = dialog_styles.get("weight", {}).get("text color")
         self.weight_dialog_text_size = dialog_styles.get("weight", {}).get("text size")
+
+        self.expected_weight_dialog_text = dialog_styles.get("expected weight", {}).get("text")
+        self.expected_weight_dialog_font = dialog_styles.get("expected weight", {}).get("font")
+        self.expected_weight_dialog_text_color = dialog_styles.get("expected weight", {}).get("text color")
+        self.expected_weight_dialog_text_size = dialog_styles.get("expected weight", {}).get("text size")
 
         self.zone_dialog_text = dialog_styles.get("zone", {}).get("text")
         self.zone_dialog_font = dialog_styles.get("zone", {}).get("font")
@@ -39,6 +49,8 @@ class CaptureWindow(QDialog):
 
         self.init_UI(captured_weight)
 
+        self.move(desktop_rect.center().x(), desktop_rect.top())
+
     def init_UI(self, captured_weight):
 
         self.setWindowTitle(self.capture_window_title)
@@ -49,6 +61,12 @@ class CaptureWindow(QDialog):
         label.setFont(QFont(self.weight_dialog_font, self.weight_dialog_text_size))
         label.setStyleSheet(f"color: {self.weight_dialog_text_color};")
         layout.addWidget(label)
+
+        expected_weight_label = QLabel(self.expected_weight_dialog_text + f" {captured_weight + self.known_weight} {self.units}")
+        expected_weight_label.setFont(QFont(self.expected_weight_dialog_font, self.expected_weight_dialog_text_size))
+        expected_weight_label.setStyleSheet(f"color: {self.expected_weight_dialog_text_color};")
+        if self.debug_mode_is_active:
+            layout.addWidget(expected_weight_label)
 
         row2 = QHBoxLayout()
         zone_label = QLabel(self.zone_dialog_text)

@@ -30,6 +30,9 @@ weight units:
   - lb
   - kg
 
+known weight:
+  default: 25
+
 calibrate data points: 2
 
 web app URL: https://scout-scale-1.web.app

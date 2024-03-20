@@ -208,10 +208,12 @@ class MainWindow(QMainWindow):
         cred = credentials.Certificate(self.config_parameters["Firebase"]["key"])
         firebase_admin.initialize_app(cred)
 
+        self.units = self.config_parameters["weight units"]["default unit"]
+        self.known_weight = float(self.config_parameters["known weight"]["default"])
+
         self.init_UI()
 
         self.selected_serial_port = self.config_parameters["Serial"]["mock ports"][0]
-        self.units = self.config_parameters["weight units"]["default unit"]
         self.uploading = self.config_parameters["Firebase"]["uploading data"]
         
         self.connect_to_output_file("__init__")
@@ -431,7 +433,7 @@ class MainWindow(QMainWindow):
 
         self.checklist = ChecklistWindow(self.style_guide, self)
 
-        self.debug = DebugWindow(self.style_guide, self)
+        self.debug = DebugWindow(self.style_guide, self.units, self)
         self.debug.hide()
 
         if not self.main_window_auto_size:
@@ -447,9 +449,10 @@ class MainWindow(QMainWindow):
 
     def show_configuration_menu(self):
         csv_file_name = self.csv_file.replace(self.config_parameters["Local Data Collection"]["folder"], "")
-        config_window = ConfigurationWindow(self.style_guide, self.config_parameters, csv_file_name, self.units, self.serial_thread, self)
+        config_window = ConfigurationWindow(self.style_guide, self.config_parameters, csv_file_name, self.units, self.known_weight, self.serial_thread, self)
         config_window.change_units_signal.connect(self.update_units)
         config_window.change_output_file_signal.connect(self.connect_to_output_file)
+        config_window.change_known_weights_signal.connect(self.update_known_weight)
         config_window.exec_()
     
     def connect_to_output_file(self, file_name):
@@ -501,7 +504,9 @@ class MainWindow(QMainWindow):
         unit_header = self.config_parameters["Local Data Collection"]["labels"]["units"]
         zone_header = self.config_parameters["Local Data Collection"]["labels"]["zone"]
 
-        capture_window = CaptureWindow(self.style_guide, temp_weight, self.units)
+        desktop = QApplication.desktop()
+        desktop_rect = desktop.availableGeometry()
+        capture_window = CaptureWindow(self.style_guide, temp_weight, self.units, self.debug.isVisible(), desktop_rect, self.known_weight)
         if capture_window.exec_() == QDialog.Accepted:
             zone = capture_window.text_box.text()
             
@@ -546,7 +551,11 @@ class MainWindow(QMainWindow):
         self.update_weight_display()
 
     def update_units(self, units):
-        self.units = units    
+        self.units = units
+        self.debug.units = units
+
+    def update_known_weight(self, known_weight):
+        self.known_weight = known_weight
 
     def update_weight_display(self):
         self.weight_display.setText(f"{self.current_weight_label_text} {self.weight} {self.units}")

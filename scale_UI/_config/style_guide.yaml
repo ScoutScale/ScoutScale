@@ -165,6 +165,11 @@ capture view:
       font: Arial
       text color: white
       text size: 20
+    expected weight:
+      text: "Expected Weight:"
+      font: Arial
+      text color: white
+      text size: 20
     zone:
       text: Zone
       font: Arial
@@ -231,6 +236,12 @@ configuration view:
       font: Arial
       text color: white
       text size: 20
+    known weight:
+      text: Known Weight
+      font: Arial
+      text color: white
+      text size: 20
+
   buttons:
     radio buttons:
       ports:
