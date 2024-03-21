@@ -1,6 +1,6 @@
 Firebase:
   key: _config/key.json
-  collection name: Scale App
+  collection name: Scale App Test
   labels:
     weight: Weight
     units: Unit
@@ -30,12 +30,17 @@ weight units:
   - lb
   - kg
 
+output rounding:
+  decimal place: 1
+
 known weight:
   default: 25
 
 calibrate data points: 2
 
 web app URL: https://scout-scale-1.web.app
+
+
 
 
 

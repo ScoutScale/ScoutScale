@@ -190,31 +190,6 @@ void setCellCalFactor(float calibrationValue1, float calibrationValue2, float ca
   #endif
 }
 
-float calculateTotal(float unitConversionRatio, float cell1Value, float cell2Value, float cell3Value, float cell4Value) {
-
-  float total = 0;
-
-  // if (cell1Value >= 0){
-  //   total += cell1Value;
-  // }
-  // if (cell2Value >= 0){
-  //   total += cell2Value;
-  // }
-  // if (cell3Value >= 0){
-  //   total += cell3Value;
-  // }
-  // if (cell4Value >= 0){
-  //   total += cell4Value;
-  // }
-
-  //total = total/ unitConversionRatio;
-  total = (cell1Value + cell2Value + cell3Value + cell4Value) / unitConversionRatio;
-  return total;
-  //return round(total * 2.0) / 2.0; // Round to the nearest half pound
-}
-
-
-
 void tareCells(){
   #if (DEBUGGING_ACTIVE)
   Serial.println("Taring...");
@@ -533,9 +508,14 @@ void loop() {
       Serial.print("  Total: ");
       #endif
 
-      totalValue = calculateTotal(unitConversionRatio, cell1Value, cell2Value, cell3Value, cell4Value);
-      Serial.println(totalValue);
-
+      Serial.print(cell1Value/unitConversionRatio);
+      Serial.print(":");
+      Serial.print(cell2Value/unitConversionRatio);
+      Serial.print(":");
+      Serial.print(cell3Value/unitConversionRatio);
+      Serial.print(":");
+      Serial.println(cell4Value/unitConversionRatio);
+      
       dataReady = false;
 
       t = millis();

@@ -4,7 +4,7 @@ from yaml import safe_load
 from _serial.serial_thread import SerialReaderThread
 
 class DebugWindow(QDialog):
-    def __init__(self, style_guide, units, parent=None):
+    def __init__(self, style_guide, units, serial_thread, parent=None):
         super().__init__(parent)
 
         self.units = units
@@ -25,9 +25,9 @@ class DebugWindow(QDialog):
         self.debug_text_box_width = text_box_style.get("width")
         self.debug_text_box_height = text_box_style.get("height")
 
-        self.init_UI()
+        self.serial_thread = serial_thread
 
-        self.retrieve_config_file()
+        self.init_UI()
 
         self.connect_serial_port()
 
@@ -44,12 +44,10 @@ class DebugWindow(QDialog):
         self.debug_body_text.setMinimumSize(self.debug_text_box_width, self.debug_text_box_height)
         layout.addWidget(self.debug_body_text)
 
-        layout.addStretch()
-
         self.setLayout(layout)
 
         if not self.debug_window_auto_size:
-            self.resize(self.checklist_window_width, self.checklist_window_height)
+            self.resize(self.debug_window_width, self.debug_window_height)
 
         desktop = QApplication.desktop()
         desktop_rect = desktop.availableGeometry()
@@ -58,15 +56,7 @@ class DebugWindow(QDialog):
         self.show()
 
     def connect_serial_port(self):
-        self.selected_serial_port = self.config_parameters["Serial"]["mock ports"][0]
-
-        self.serial_thread = SerialReaderThread(self.config_parameters, self.selected_serial_port)
-        self.serial_thread.start()
         self.serial_thread.new_data.connect(self.update_weight)
-
-    def retrieve_config_file(self):
-        with open("_config/config.yaml", 'r') as file:
-            self.config_parameters = safe_load(file)
 
     def update_weight(self, weight_string):
         self.debug_body_text.setHtml(self.debug_text(weight_string=weight_string))
@@ -76,11 +66,18 @@ class DebugWindow(QDialog):
         return self.base_debug_text(strings=split_weights)
 
     def base_debug_text(self, strings: [str]):
+        leg_1_value = round(float(strings[0]), 3) if strings[0] else 0.0
+        leg_2_value = round(float(strings[1]), 3) if strings[1] else 0.0
+        leg_3_value = round(float(strings[2]), 3) if strings[2] else 0.0
+        leg_4_value = round(float(strings[3]), 3) if strings[3] else 0.0
+        
         return f"""
-        <p style="font-size: 24px;">Leg 1: {strings[0]} {self.units}</p>
-        <p style="font-size: 24px;">Leg 2: {strings[1]} {self.units}</p>
-        <p style="font-size: 24px;">Leg 3: {strings[2]} {self.units}</p>
-        <p style="font-size: 24px;">Leg 4: {strings[3]} {self.units}</p>
+        <p style="font-size: 24px;">Leg 1: {leg_1_value} {self.units}</p>
+        <p style="font-size: 24px;">Leg 2: {leg_2_value} {self.units}</p>
+        <p style="font-size: 24px;">Leg 3: {leg_3_value} {self.units}</p>
+        <p style="font-size: 24px;">Leg 4: {leg_4_value} {self.units}</p>
         """
+
+
 
 

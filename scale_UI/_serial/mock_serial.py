@@ -39,7 +39,7 @@ class MockSerial:
         else:
             split_weight = self.weight / 4
             send_value = f"{split_weight}:{split_weight}:{split_weight}:{split_weight}"
-            self.weight += 6.5
+            self.weight += 6.576
         #print(send_value)
         return send_value.encode('utf-8')
 

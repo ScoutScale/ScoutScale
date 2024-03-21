@@ -2,6 +2,7 @@ import os
 import sys
 import pandas as pd
 import firebase_admin
+import socket
 
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -211,8 +212,6 @@ class MainWindow(QMainWindow):
         self.units = self.config_parameters["weight units"]["default unit"]
         self.known_weight = float(self.config_parameters["known weight"]["default"])
 
-        self.init_UI()
-
         self.selected_serial_port = self.config_parameters["Serial"]["mock ports"][0]
         self.uploading = self.config_parameters["Firebase"]["uploading data"]
         
@@ -221,6 +220,8 @@ class MainWindow(QMainWindow):
         self.serial_thread = SerialReaderThread(self.config_parameters, self.selected_serial_port)
         self.connect_signals()
         self.serial_thread.start()
+
+        self.init_UI()
     
     def retrieve_config_file(self):
         with open("_config/config.yaml", 'r') as file:
@@ -433,7 +434,7 @@ class MainWindow(QMainWindow):
 
         self.checklist = ChecklistWindow(self.style_guide, self)
 
-        self.debug = DebugWindow(self.style_guide, self.units, self)
+        self.debug = DebugWindow(self.style_guide, self.units, self.serial_thread, self)
         self.debug.hide()
 
         if not self.main_window_auto_size:
@@ -533,6 +534,7 @@ class MainWindow(QMainWindow):
                     if self.uploading:
                         db = firestore.client()
                         data = {
+                        "Device ID" : socket.gethostname(),
                         self.config_parameters["Firebase"]["labels"]["weight"] : float(-previous_entry[1]),
                         self.config_parameters["Firebase"]["labels"]["units"] : previous_entry[2],
                         self.config_parameters["Firebase"]["labels"]["date"] : firestore.SERVER_TIMESTAMP,
@@ -547,7 +549,7 @@ class MainWindow(QMainWindow):
                 window.exec()
 
     def update_weight(self, weight: str):
-        self.weight = sum([float(split_weight) for split_weight in weight.split(":")])
+        self.weight = round(sum([float(split_weight) for split_weight in weight.split(":")]), self.config_parameters["output rounding"]["decimal place"])
         self.update_weight_display()
 
     def update_units(self, units):
@@ -564,6 +566,7 @@ class MainWindow(QMainWindow):
         if self.uploading:
             db = firestore.client()
             data = {
+            "Device ID" : socket.gethostname(),
             self.config_parameters["Firebase"]["labels"]["weight"] : float(weight),
             self.config_parameters["Firebase"]["labels"]["units"] : self.units,
             self.config_parameters["Firebase"]["labels"]["date"] : firestore.SERVER_TIMESTAMP,
