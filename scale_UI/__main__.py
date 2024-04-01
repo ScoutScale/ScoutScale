@@ -224,11 +224,11 @@ class MainWindow(QMainWindow):
         self.init_UI()
     
     def retrieve_config_file(self):
-        with open("_config/config.yaml", 'r') as file:
+        with open("_config/config.yaml", 'r', encoding='utf-8') as file:
             self.config_parameters = safe_load(file)
 
     def retrieve_style_guide(self):
-        with open("_config/style_guide.yaml", 'r') as file:
+        with open("_config/style_guide.yaml", 'r', encoding='utf-8') as file:
             self.style_guide = safe_load(file)
 
     def connect_signals(self):

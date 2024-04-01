@@ -18,9 +18,9 @@ main view:
       menu:
         label: ☰
         label font: Gill Sans
-        label text size: 48
+        label text size: 32
         label color: black
-        padding: -10px
+        padding: -1px
         text alignment: center
         width: 45
         height: 45
@@ -28,55 +28,55 @@ main view:
           checklist:
             label: ☑
             label font: Gill Sans
-            label text size: 48
+            label text size: 26
             label color: black
-            padding: -10px
+            padding: -2px
             text alignment: center
             width: 28
-            height: 26
+            height: 28
           delete entry: 
             label: ⌫
             label font: Gill Sans
-            label text size: 24
+            label text size: 18
             label color: black
-            padding: 0px
+            padding: -3px
             text alignment: center
             width: 30
             height: 27
           qr code:
             image:
               location: _resources/QR_icon.png
-              width: 32
-              height: 32
+              width: 30
+              height: 30
             width: 30
             height: 30
             border: none
           settings:
             label: ⚙
             label font: Gill Sans
-            label text size: 48
+            label text size: 22
             label color: black
-            padding: -5px
+            padding: -7px
             text alignment: center
-            width: 30
+            width: 33
             height: 33
           debug:
             label: 🐞
             label font: Gill Sans
-            label text size: 28
+            label text size: 20
             label color: black
             color: rgb(254,248,234)
-            padding: 0px
+            padding: -2px
             text alignment: center
             width: 30
             height: 30
           exit:
             label: ⓧ
             label font: Gill Sans
-            label text size: 28
+            label text size: 20
             label color: red
             color: rgb(254,248,234)
-            padding: 0px
+            padding: -2px
             text alignment: center
             width: 30
             height: 30
@@ -219,7 +219,7 @@ debug:
 configuration view:
   window:
     title: Menu
-    color: rgb(46,46,46)
+    color: blue
     width: 400
     height: 700
     auto size: True
@@ -227,33 +227,27 @@ configuration view:
     ports:
       text: Serial Ports
       font: Arial
-      text color: white
       text size: 20
     units:
       text: Output Units
       font: Arial
-      text color: white
       text size: 20
     output file:
       text: Output File
       font: Arial
-      text color: white
       text size: 20
     known weight:
       text: Known Weight
       font: Arial
-      text color: white
       text size: 20
 
   buttons:
     radio buttons:
       ports:
         font: Arial
-        text color: white
         text size: 16
       units:
         font: Arial
-        text color: white
         text size: 16
 
 confirm action view:
@@ -271,7 +265,7 @@ confirm action view:
     text color: white
     text size: 20
     width: 300
-    height: 60
+    height: 80
   buttons:
     confirm:
       label: Confirm

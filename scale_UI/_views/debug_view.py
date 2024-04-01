@@ -51,7 +51,9 @@ class DebugWindow(QDialog):
 
         desktop = QApplication.desktop()
         desktop_rect = desktop.availableGeometry()
-        self.move(desktop_rect.topRight())
+        # self.move(desktop_rect.topRight())
+        self.move(desktop_rect.center().x()+300, desktop_rect.top())
+
 
         self.show()
 
