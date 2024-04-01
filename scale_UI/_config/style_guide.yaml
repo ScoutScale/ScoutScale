@@ -85,6 +85,9 @@ main view:
     text size: 56
     text color: black
   dynamic font resizing:
+    enabled: True
+    default scale font size: 48
+    default button font size: 48
     window divisor: 9
     weight display correction: 10
   labels:

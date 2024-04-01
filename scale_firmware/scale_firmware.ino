@@ -20,7 +20,7 @@ Hardware Parameters
 #include <HX711_ADC.h>
 
 // Used for debugging code
-#define DEBUGGING_ACTIVE true
+#define DEBUGGING_ACTIVE false
 
 #define CELL1_ACTIVE true
 #define CELL2_ACTIVE true

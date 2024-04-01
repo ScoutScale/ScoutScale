@@ -301,6 +301,8 @@ class MainWindow(QMainWindow):
 
         self.window_divisor = dynamic_font_resizing_style.get("window divisor")
         self.weight_display_correction = dynamic_font_resizing_style.get("weight display correction")
+        self.default_scale_font_size = dynamic_font_resizing_style.get("default scale font size")
+        self.defualt_button_font_size = dynamic_font_resizing_style.get("default button font size")
 
         self.current_weight_label_text = label_styles.get("current weight", {}).get("text")
         self.current_weight_label_font = label_styles.get("current weight", {}).get("font")
@@ -375,14 +377,14 @@ class MainWindow(QMainWindow):
         main_view.addLayout(row1)
 
         self.weight_display = QLabel(self.current_weight_label_text)
-        self.weight_display_font = QFont(self.current_weight_label_font)
+        self.weight_display_font = QFont(self.current_weight_label_font, self.default_scale_font_size)
         self.weight_display_font.setBold(True)
         self.weight_display.setFont(self.weight_display_font)
         self.weight_display.setStyleSheet(f"color: {self.current_weight_label_text_color};") 
         main_view.addWidget(self.weight_display, alignment=Qt.AlignCenter)
 
         self.capture_button = QPushButton(self.capture_button_label)
-        self.capture_button_font = QFont(self.capture_button_font_style)
+        self.capture_button_font = QFont(self.capture_button_font_style, self.defualt_button_font_size)
         self.capture_button_font.setBold(True)
         self.capture_button.setFont(QFont(self.capture_button_font))
         self.capture_button.setStyleSheet(f"""QPushButton {{ 
@@ -394,7 +396,7 @@ class MainWindow(QMainWindow):
         main_view.addWidget(self.capture_button)
 
         self.tare_button = QPushButton(self.tare_button_label)
-        self.tare_button_font = QFont(self.tare_button_font_style)
+        self.tare_button_font = QFont(self.tare_button_font_style, self.defualt_button_font_size)
         self.tare_button_font.setBold(True)
         self.tare_button.setFont(self.tare_button_font)
         self.tare_button.setStyleSheet(f"""QPushButton {{
@@ -406,7 +408,7 @@ class MainWindow(QMainWindow):
         main_view.addWidget(self.tare_button)
 
         self.calibrate_button = QPushButton(self.calibrate_button_label)
-        self.calibrate_button_font = QFont(self.calibrate_button_font_style)
+        self.calibrate_button_font = QFont(self.calibrate_button_font_style, self.defualt_button_font_size)
         self.calibrate_button_font.setBold(True)
         self.calibrate_button.setFont(self.calibrate_button_font)
         self.calibrate_button.setStyleSheet(f"""QPushButton {{
@@ -580,16 +582,17 @@ class MainWindow(QMainWindow):
         qr_code_menu.exec_()
 
     def resizeEvent(self, event):
-        font_size = event.size().height() // self.window_divisor
-        self.weight_display_font.setPointSize(font_size + 10)
-        self.capture_button_font.setPointSize(font_size)
-        self.tare_button_font.setPointSize(font_size)
-        self.calibrate_button_font.setPointSize(font_size)
+        if (self.style_guide["main view"]["dynamic font resizing"]["enabled"]):
+            font_size = event.size().height() // self.window_divisor
+            self.weight_display_font.setPointSize(font_size + 10)
+            self.capture_button_font.setPointSize(font_size)
+            self.tare_button_font.setPointSize(font_size)
+            self.calibrate_button_font.setPointSize(font_size)
 
-        self.weight_display.setFont(self.weight_display_font)
-        self.capture_button.setFont(self.capture_button_font)
-        self.tare_button.setFont(self.tare_button_font)
-        self.calibrate_button.setFont(self.calibrate_button_font)
+            self.weight_display.setFont(self.weight_display_font)
+            self.capture_button.setFont(self.capture_button_font)
+            self.tare_button.setFont(self.tare_button_font)
+            self.calibrate_button.setFont(self.calibrate_button_font)
         super().resizeEvent(event)
 
     def toggle_checklist(self):
