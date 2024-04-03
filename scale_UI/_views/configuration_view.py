@@ -2,7 +2,7 @@ import serial.tools.list_ports
 from PyQt5.QtWidgets import QDialog, QPushButton, QRadioButton, QVBoxLayout, QLabel, QButtonGroup, QComboBox, QLineEdit, \
     QHBoxLayout
 from PyQt5.QtCore import pyqtSignal, QCoreApplication
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPalette, QColor
 import os
 
 
@@ -71,36 +71,37 @@ class ConfigurationWindow(QDialog):
 
     def init_UI(self):
 
-        self.setWindowTitle(self.configuration_window_title)
-        self.setStyleSheet(f"background-color: {self.configuration_window_color};")
+        self.setWindowTitle(self.configuration_window_title)  
+        self.setStyleSheet(f"background-color: {self.configuration_window_color}")    
 
         self.layout = QVBoxLayout(self)
         
         port_label = QLabel(self.ports_dialog_text)
         port_label.setFont(QFont(self.ports_dialog_font, self.ports_dialog_text_size))
-        self.setStyleSheet(f"color: {self.ports_dialog_text_color}")
+        port_label.setStyleSheet(f"color: {self.ports_dialog_text_color}")
         self.layout.addWidget(port_label)
 
         self.ports_layout = QVBoxLayout()
         self.populate_ports()
 
-        port_label = QLabel(self.units_dialog_text)
-        port_label.setFont(QFont(self.units_dialog_font, self.units_dialog_text_size))
-        port_label.setStyleSheet(f"color: {self.units_dialog_text_color}")
-        self.layout.addWidget(port_label)
+        unit_label = QLabel(self.units_dialog_text)
+        unit_label.setFont(QFont(self.units_dialog_font, self.units_dialog_text_size))
+        unit_label.setStyleSheet(f"color: {self.units_dialog_text_color}")
+        self.layout.addWidget(unit_label)
 
         self.units_layout = QVBoxLayout()
         self.populate_units()
 
-        port_label = QLabel(self.output_file_dialog_text)
-        port_label.setFont(QFont(self.output_file_font, self.output_file_text_size))
-        port_label.setStyleSheet(f"color: {self.output_file_text_color}")
-        self.layout.addWidget(port_label)
+        output_file_label = QLabel(self.output_file_dialog_text)
+        output_file_label.setFont(QFont(self.output_file_font, self.output_file_text_size))
+        output_file_label.setStyleSheet(f"color: {self.output_file_text_color}")
+        self.layout.addWidget(output_file_label)
 
         self.file_combo_box = QComboBox()
         self.file_combo_box.currentIndexChanged.connect(self.on_file_selected)
         self.populate_files()
         self.set_default_selected_file()
+        self.file_combo_box.setStyleSheet(f"color: {self.output_file_text_color};")
         self.layout.addWidget(self.file_combo_box)
 
         known_weight_row = QHBoxLayout()
@@ -112,6 +113,7 @@ class ConfigurationWindow(QDialog):
         self.known_weight_text_box = QLineEdit()
         self.known_weight_text_box.setText(self.known_weight_text)
         self.known_weight_text_box.textChanged.connect(self.set_known_weight)
+        self.known_weight_text_box.setStyleSheet(f"color: {self.known_weight_text_color}; border: 1px solid black;")
         known_weight_row.addWidget(self.known_weight_text_box)
 
         self.layout.addLayout(known_weight_row)

@@ -75,6 +75,7 @@ class CaptureWindow(QDialog):
         row2.addWidget(zone_label)
 
         self.text_box = QLineEdit()
+        self.text_box.setStyleSheet(f"color: {self.zone_dialog_text_color};")
         row2.addWidget(self.text_box)
 
         layout.addLayout(row2)

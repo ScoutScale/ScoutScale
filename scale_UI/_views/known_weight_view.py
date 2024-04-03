@@ -45,6 +45,7 @@ class KnownWeightWindow(QDialog):
         layout.addWidget(label)
 
         self.weightEntry = QLineEdit()
+        self.weightEntry.setStyleSheet(f"color: {self.dialog_text_color}") 
         layout.addWidget(self.weightEntry)
 
         confirm_button = QPushButton(self.confirm_button_label)

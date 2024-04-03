@@ -1,12 +1,17 @@
 Firebase:
   key: _config/key.json
-  collection name: Scale App Test
+  collection name: Scale App
   labels:
     weight: Weight
     units: Unit
     date: Date
     zone: Zone
   uploading data: False
+
+# this only affects visual elements
+# currently supported Operating Systems: "windows" | "macos"
+
+Operating System: macos
 
 Local Data Collection:
   folder: data/

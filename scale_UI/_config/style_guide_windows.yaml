@@ -219,7 +219,7 @@ debug:
 configuration view:
   window:
     title: Menu
-    color: blue
+    color: rgb(46,46,46)
     width: 400
     height: 700
     auto size: True
@@ -227,27 +227,33 @@ configuration view:
     ports:
       text: Serial Ports
       font: Arial
+      text color: white
       text size: 20
     units:
       text: Output Units
       font: Arial
+      text color: white
       text size: 20
     output file:
       text: Output File
       font: Arial
+      text color: white
       text size: 20
     known weight:
       text: Known Weight
       font: Arial
+      text color: white
       text size: 20
 
   buttons:
     radio buttons:
       ports:
         font: Arial
+        text color: white
         text size: 16
       units:
         font: Arial
+        text color: white
         text size: 16
 
 confirm action view:

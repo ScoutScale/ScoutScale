@@ -68,10 +68,16 @@ class DebugWindow(QDialog):
         return self.base_debug_text(strings=split_weights)
 
     def base_debug_text(self, strings: [str]):
-        leg_1_value = round(float(strings[0]), 3) if strings[0] else 0.0
-        leg_2_value = round(float(strings[1]), 3) if strings[1] else 0.0
-        leg_3_value = round(float(strings[2]), 3) if strings[2] else 0.0
-        leg_4_value = round(float(strings[3]), 3) if strings[3] else 0.0
+        try:
+            leg_1_value = round(float(strings[0]), 3) if strings[0] else 0.0
+            leg_2_value = round(float(strings[1]), 3) if strings[1] else 0.0
+            leg_3_value = round(float(strings[2]), 3) if strings[2] else 0.0
+            leg_4_value = round(float(strings[3]), 3) if strings[3] else 0.0
+        except ValueError:
+            leg_1_value = "ERROR"
+            leg_2_value = "ERROR"
+            leg_3_value = "ERROR"
+            leg_4_value = "ERROR"
         
         return f"""
         <p style="font-size: 24px;">Leg 1: {leg_1_value} {self.units}</p>

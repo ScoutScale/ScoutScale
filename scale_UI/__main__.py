@@ -228,7 +228,10 @@ class MainWindow(QMainWindow):
             self.config_parameters = safe_load(file)
 
     def retrieve_style_guide(self):
-        with open("_config/style_guide.yaml", 'r', encoding='utf-8') as file:
+
+        platformType = self.config_parameters["Operating System"]
+
+        with open("_config/style_guide_" + platformType + ".yaml", 'r', encoding='utf-8') as file:
             self.style_guide = safe_load(file)
 
     def connect_signals(self):
@@ -528,22 +531,27 @@ class MainWindow(QMainWindow):
                     df = pd.DataFrame()
 
                 if not df.empty:
-                    previous_entry = df.iloc[-1]
                     
                     df = df.drop(df.index[-1])
                     df.to_csv(self.csv_file, index=False)
 
                     if self.uploading:
+
                         db = firestore.client()
-                        data = {
-                        "Device ID" : socket.gethostname(),
-                        self.config_parameters["Firebase"]["labels"]["weight"] : float(-previous_entry[1]),
-                        self.config_parameters["Firebase"]["labels"]["units"] : previous_entry[2],
-                        self.config_parameters["Firebase"]["labels"]["date"] : firestore.SERVER_TIMESTAMP,
-                        self.config_parameters["Firebase"]["labels"]["zone"] : int(previous_entry[3])
-                        }
-                        doc_ref = db.collection(self.config_parameters["Firebase"]["collection name"]).document()
-                        doc_ref.set(data)
+
+                        collection_ref = db.collection(self.config_parameters["Firebase"]["collection name"])
+                        query = (collection_ref
+                                 .where(filter=firestore.FieldFilter("Device_ID", "==", socket.gethostname()))
+                                 .order_by("Date", direction=firestore.Query.DESCENDING)
+                                )
+
+                        results = list(query.stream())
+
+                        if results:
+
+                            first_document_ref = results[0].reference
+                            first_document_ref.delete()
+
                     self.prev_capture_available = False
 
             else:
@@ -551,8 +559,11 @@ class MainWindow(QMainWindow):
                 window.exec()
 
     def update_weight(self, weight: str):
-        self.weight = round(sum([float(split_weight) for split_weight in weight.split(":")]), self.config_parameters["output rounding"]["decimal place"])
-        self.update_weight_display()
+        try:
+            self.weight = round(sum([float(split_weight) for split_weight in weight.split(":")]), self.config_parameters["output rounding"]["decimal place"])
+            self.update_weight_display()
+        except ValueError:
+            self.weight_display_error()
 
     def update_units(self, units):
         self.units = units
@@ -564,11 +575,14 @@ class MainWindow(QMainWindow):
     def update_weight_display(self):
         self.weight_display.setText(f"{self.current_weight_label_text} {self.weight} {self.units}")
 
+    def weight_display_error(self):
+        self.weight_display.setText(f"{self.current_weight_label_text} ERROR")
+
     def send_to_backend(self, weight, zone):
         if self.uploading:
             db = firestore.client()
             data = {
-            "Device ID" : socket.gethostname(),
+            "Device_ID" : socket.gethostname(),
             self.config_parameters["Firebase"]["labels"]["weight"] : float(weight),
             self.config_parameters["Firebase"]["labels"]["units"] : self.units,
             self.config_parameters["Firebase"]["labels"]["date"] : firestore.SERVER_TIMESTAMP,
