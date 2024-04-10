@@ -563,11 +563,18 @@ class MainWindow(QMainWindow):
             self.weight = round(sum([float(split_weight) for split_weight in weight.split(":")]), self.config_parameters["output rounding"]["decimal place"])
             self.update_weight_display()
         except ValueError:
-            self.weight_display_error()
+            if weight == "m:m:m:m":
+                self.mock_serial_display()
+            else:
+                self.weight_display_error()
+            
 
     def update_units(self, units):
         self.units = units
         self.debug.units = units
+
+    def mock_serial_display(self):
+        self.weight_display.setText("Mock Serial | Change Serial Port")
 
     def update_known_weight(self, known_weight):
         self.known_weight = known_weight

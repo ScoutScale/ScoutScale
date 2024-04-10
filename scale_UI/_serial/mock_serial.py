@@ -4,7 +4,6 @@ class MockSerial:
     def __init__(self, port, baudrate):
         self.port = port
         self.baudrate = baudrate
-        self.weight = 200
         self.taring = False
         self.weighing = False
         self.calibrate_abort = False
@@ -17,7 +16,6 @@ class MockSerial:
         print(f"MockSerial write: {command}")
 
         if command in [b't', b'z']:
-            self.weight = 0
             self.taring = True
         elif command == b'w':
             self.weighing = True
@@ -37,10 +35,7 @@ class MockSerial:
             send_value = "x"
             self.calibrate_abort = False
         else:
-            split_weight = self.weight / 4
-            send_value = f"{split_weight}:{split_weight}:{split_weight}:{split_weight}"
-            self.weight += 6.576
-        #print(send_value)
+            send_value = f"m:m:m:m"
         return send_value.encode('utf-8')
 
     def close(self):

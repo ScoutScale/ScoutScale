@@ -26,7 +26,6 @@ class SerialReaderThread(QThread):
         self.serial_port_name = serial_port_name
 
         self.mock_port1_name = config_parameters["Serial"]["mock ports"][0]
-        self.mock_port2_name = config_parameters["Serial"]["mock ports"][1]
         self.baudrate = config_parameters["Serial"]["baudrate"]
 
         self.waiting_for_calibration = False
@@ -40,10 +39,8 @@ class SerialReaderThread(QThread):
         self.serial_port_name = port_name
 
         # currently set up to work with both real and mock ports
-        if (port_name !=  self.mock_port1_name and port_name != self.mock_port2_name):
+        if (port_name !=  self.mock_port1_name):
             self.serial_port = serial.Serial(port_name, baudrate=self.baudrate)
-        elif (port_name == self.mock_port2_name):
-            self.serial_port = MockSerial(self.mock_port2_name, self.baudrate)
         else:
             self.serial_port = MockSerial(self.mock_port1_name, self.baudrate)
 

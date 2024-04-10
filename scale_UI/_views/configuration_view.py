@@ -165,9 +165,13 @@ class ConfigurationWindow(QDialog):
             self.change_units_signal.emit(unit)
 
     def populate_files(self):
+
+
         data_files = os.listdir(self.data_folder)
         for file_name in data_files:
-            self.file_combo_box.addItem(file_name)
+
+            if ".csv"  in file_name:
+                self.file_combo_box.addItem(file_name)
 
     def on_file_selected(self):
         selected_file = self.file_combo_box.currentText()

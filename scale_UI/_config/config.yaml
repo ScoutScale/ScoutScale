@@ -6,12 +6,12 @@ Firebase:
     units: Unit
     date: Date
     zone: Zone
-  uploading data: False
+  uploading data: True
 
 # this only affects visual elements
 # currently supported Operating Systems: "windows" | "macos"
 
-Operating System: macos
+Operating System: windows
 
 Local Data Collection:
   folder: data/
@@ -21,13 +21,12 @@ Local Data Collection:
     date: Capture Date
     zone: Zone
   default file name: ScoutScale_data.csv
-  new file creation mode: False
+  new file creation mode: True
   
 Serial:
   baudrate: 57600
   mock ports:
   - /dev/ttyUSB0
-  - /dev/ttyUSB1
 
 weight units:
   default unit: lb

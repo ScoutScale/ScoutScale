@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QApplication
 checklist_text = """
 <p style="font-size: 24px;">Checklist</p>
 <ul style="list-style-type: disc;">
+    <li style="font-size: 18px; margin-bottom: 10px;">Connect to Wi-Fi.</li>
     <li style="font-size: 18px; margin-bottom: 10px;">Verify that data is uploading to database.</li>
     <li style="font-size: 18px; margin-bottom: 10px;">Connect to arduino serial port.</li>
     <li style="font-size: 18px; margin-bottom: 10px;">Verify that the correct output file is selected in the settings menu.</li>
