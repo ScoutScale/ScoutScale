@@ -4,6 +4,7 @@ import pandas as pd
 import firebase_admin
 import socket
 
+import yaml
 from firebase_admin import credentials
 from firebase_admin import firestore
 from yaml import safe_load
@@ -199,6 +200,8 @@ class MainWindow(QMainWindow):
         
         self.retrieve_config_file()
         self.retrieve_style_guide()
+        self.get_firebase_key()
+        self.get_data_folder_key()
 
         self.get_main_window_style_guide_parameters()
 
@@ -206,7 +209,7 @@ class MainWindow(QMainWindow):
 
         self.weight = 0
 
-        cred = credentials.Certificate(self.config_parameters["Firebase"]["key"])
+        cred = credentials.Certificate(self.firebase_key)
         firebase_admin.initialize_app(cred)
 
         self.units = self.config_parameters["weight units"]["default unit"]
@@ -222,16 +225,22 @@ class MainWindow(QMainWindow):
         self.serial_thread.start()
 
         self.init_UI()
-    
+
+    def get_firebase_key(self):
+        firebase_key_path = self.config_parameters['Firebase']['key']
+        self.firebase_key = os.path.join(os.path.dirname(__file__), firebase_key_path)
     def retrieve_config_file(self):
-        with open("_config/config.yaml", 'r', encoding='utf-8') as file:
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, '_config/config.yaml')
+        with open(filename, 'r', encoding='utf-8') as file:
             self.config_parameters = safe_load(file)
 
     def retrieve_style_guide(self):
-
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, '_config/style_guide_')
         platformType = self.config_parameters["Operating System"]
 
-        with open("_config/style_guide_" + platformType + ".yaml", 'r', encoding='utf-8') as file:
+        with open(filename + platformType + ".yaml", 'r', encoding='utf-8') as file:
             self.style_guide = safe_load(file)
 
     def connect_signals(self):
@@ -444,7 +453,7 @@ class MainWindow(QMainWindow):
 
         if not self.main_window_auto_size:
             self.resize(self.main_window_width, self.main_window_height)
-        
+
         self.center_on_screen()
 
     def toggle_side_menu(self):
@@ -460,7 +469,10 @@ class MainWindow(QMainWindow):
         config_window.change_output_file_signal.connect(self.connect_to_output_file)
         config_window.change_known_weights_signal.connect(self.update_known_weight)
         config_window.exec_()
-    
+
+    def get_data_folder_key(self):
+        folder_key_path = self.config_parameters["Local Data Collection"]["folder"]
+        self.folder_key = os.path.join(os.path.dirname(__file__), folder_key_path)
     def connect_to_output_file(self, file_name):
         self.prev_capture_available = False
 
@@ -470,7 +482,7 @@ class MainWindow(QMainWindow):
         zone_header = self.config_parameters["Local Data Collection"]["labels"]["zone"]
 
         if self.config_parameters["Local Data Collection"]["new file creation mode"] is True:
-            self.csv_file = self.config_parameters["Local Data Collection"]["folder"] + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".csv"
+            self.csv_file = self.folder_key + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".csv"
             pd.DataFrame(columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, index=False)
         else:
             if file_name != "__init__":
