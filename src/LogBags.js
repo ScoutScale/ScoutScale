@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import "./App.css";
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { firestore } from "./firebase";
 import { GeoPoint } from 'firebase/firestore';
 import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy, where } from "@firebase/firestore";
@@ -12,7 +13,12 @@ export const LogBags = ({ authCode }) => {
   const [numBags, setnumBags] = useState('');
   const [zoneNum, setzoneNum] = useState('');
   const [newLocation, setNewLocation] = useState(0);
-  const [coords, setCoords] = useState(null)
+  const [coords, setCoords] = useState(null);
+  const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [menuItem, setMenuItem] = useState(1);
+
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -24,6 +30,7 @@ export const LogBags = ({ authCode }) => {
   const bagRef = useRef();
   const zoneRef = useRef();
   const ref = collection(firestore, "React App");
+  const adminPasswordRef = useRef();
   const valueChange = () => {setChecked(!isChecked);};
 
   
@@ -106,17 +113,58 @@ export const LogBags = ({ authCode }) => {
     }
   }
 
+  const checkAdminPassword = () => {
+    let password = 'adminpassword123'
+    if (adminPassword.trim() == password) {
+      setAdminAuthenticated(true)
+    }else {
+      alert('incorrect password');
+      adminPasswordRef.current.value = '';
+    }
+  }
+
   return (
     <div>
-    {coords?.latitude ? (
+      <button onClick={() => {setMenuOpen(true)}} className="absolute left-3 top-10" >
+          <MenuIcon className="text-sm ml-5"/>
+      </button>
+      <div className={`absolute w-3/5 z-10 h-screen bg-[#fff8e8] border border-r-1 ${menuOpen ? 'right-3/5 transition ease-in-out duration-300' : 'right-[120%] transition ease-in-out duration-300'}`}>
+        <button onClick={() => {setMenuOpen(false)}}>
+          <ArrowBackIcon className="text-sm ml-5 mt-10" />
+        </button>
+        {adminAuthenticated ? (
+          <div className="w-full h-full flex items-center flex-col pt-10">
+            <button onClick={() => {setMenuItem(1)}} className={`border-b-1 border-blue-300 w-full flex items-center justify-center h-12 font-bold ${menuItem == 1 ? 'text-green-700' : 'text-black'}`}>
+              Log Bags
+            </button>
+            <button onClick={() => {setMenuItem(2)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 2 ? 'text-green-700' : 'text-black'}`}>
+              Menu item 2
+            </button>
+            <button onClick={() => {setMenuItem(3)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 3 ? 'text-green-700' : 'text-black'}`}>
+              Menu item 3
+            </button>
+          </div>
+        ) : (
+          <div className="w-full h-full flex justify-evenly items-center flex-col">
+            <div className="flex items-center flex-col">
+              <div className="font-bold text-xl mb-10">Enter Admin Password:</div>
+              <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value)}} />
+            </div>
+            <button onClick={() => {checkAdminPassword()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 w-2/5 rounded-lg h-10 text-xl font-bold">
+              Enter
+            </button>
+            <div />
+            <div />
+          </div>
+        )}
+      </div>
+    {coords?.latitude && menuItem == 1 ? (
         <div>
             <div className="flex flex-row items-center justify-between w-full">
-            <div className="w-2/5 h-2/5" >
-                <MenuIcon className="text-sm"/>
-            </div>
-            <div className="w-1/5 h-1/5 self-end">
-                <img alt="logo" src={require("./scout_scale_logo.jpeg")} className=""/>
-            </div>
+              <div />
+              <div className="w-1/5 h-1/5 self-end">
+                  <img alt="logo" src={require("./scout_scale_logo.jpeg")} className=""/>
+              </div>
             </div>
             <div className="flex items-center flex-col flex items-center mt-10">
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
@@ -135,7 +183,7 @@ export const LogBags = ({ authCode }) => {
                     <p>Warning: This WILL delete and replace your last entry. This action cannot be undone.</p>
               </label>
             </div>
-            <button onClick={() => {logBags()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
+            <button onClick={() => {logBags()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
                 {authLoading ? (
                 <TailSpin className="w-5 h-5" />
                 ) : (
@@ -144,8 +192,12 @@ export const LogBags = ({ authCode }) => {
             </button>
             </div>
         </div>
+    ) : coords?.latitude && menuItem == 2 ? (
+      <div>Place admin protected menu view here</div>
+    ) : coords?.latitude && menuItem == 3 ? (
+      <div>Place admin protected menu view here</div>
     ) : (
-        <div className="flex flex-col items-center justify-center w-full h-screen">
+      <div className="flex flex-col items-center justify-center w-full h-screen">
             <p className="w-4/5 text-center ">Please Select "Allow" on the prompt.</p>
         </div>
     )}
