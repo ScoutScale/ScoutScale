@@ -18,6 +18,8 @@ export const LogBags = ({ authCode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [menuItem, setMenuItem] = useState(1);
+  const [adminButtonLoading, setAdminButtonLoading] = useState(false);
+  const [error, setError] = useState('');
 
 
   useEffect(() => {
@@ -115,12 +117,17 @@ export const LogBags = ({ authCode }) => {
 
   const checkAdminPassword = () => {
     let password = 'adminpassword123'
-    if (adminPassword.trim() == password) {
-      setAdminAuthenticated(true)
-    }else {
-      alert('incorrect password');
-      adminPasswordRef.current.value = '';
-    }
+    setAdminButtonLoading(true);
+    setTimeout(() => {
+      setAdminButtonLoading(false);
+      if (adminPassword.trim() == password) {
+        setAdminAuthenticated(true)
+      }else {
+        setError('incorrect password');
+        adminPasswordRef.current.value = '';
+      }
+    }, Math.floor((Math.random() * 1000) + 100))
+
   }
 
   return (
@@ -128,7 +135,7 @@ export const LogBags = ({ authCode }) => {
       <button onClick={() => {setMenuOpen(true)}} className="absolute left-3 top-10" >
           <MenuIcon className="text-sm ml-5"/>
       </button>
-      <div className={`absolute w-3/5 z-10 h-screen bg-[#fff8e8] border border-r-1 ${menuOpen ? 'right-3/5 transition ease-in-out duration-300' : 'right-[120%] transition ease-in-out duration-300'}`}>
+      <div className={`absolute w-3/5 z-10 h-screen bg-[#fff8e8] border border-r-1 left-0 ${menuOpen ? 'translate-x-0 transition ease-in-out duration-300' : '-translate-x-[100%] transition ease-in-out duration-300'}`}>
         <button onClick={() => {setMenuOpen(false)}}>
           <ArrowBackIcon className="text-sm ml-5 mt-10" />
         </button>
@@ -147,11 +154,18 @@ export const LogBags = ({ authCode }) => {
         ) : (
           <div className="w-full h-full flex justify-evenly items-center flex-col">
             <div className="flex items-center flex-col">
+              {error !== '' && (
+                <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
+              )}
               <div className="font-bold text-xl mb-10">Enter Admin Password:</div>
-              <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value)}} />
+              <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value); if(error !== ''){setError('')}}} />
             </div>
             <button onClick={() => {checkAdminPassword()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 w-2/5 rounded-lg h-10 text-xl font-bold">
-              Enter
+              {adminButtonLoading ? (
+                <TailSpin className="w-5 h-5" />
+              ) : (
+                <div>Enter</div>
+              )}
             </button>
             <div />
             <div />
