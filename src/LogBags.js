@@ -64,7 +64,6 @@ export const LogBags = ({ authCode }) => {
     }
   };
 
-
   const logBags = () => {
   if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value) > 0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value) > 0) {
     let latitude;
@@ -183,10 +182,15 @@ export const LogBags = ({ authCode }) => {
             <div className="flex items-center flex-col flex items-center mt-10">
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
             <div className = "text-center w-full">
-              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2" >-</button>
-              <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-10" ref={bagRef} placeholder="bags" 
+              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2 text-xl font-bold" >-</button>
+              <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="bags" 
               value={numBags} onChange={handleNumBagChange}/>
-              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2">+</button>
+              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2 text-xl font-bold">+</button>
+              <br></br>
+              <button onClick={() => setnumBags(1)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >1</button>
+              <button onClick={() => setnumBags(2)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >2</button>
+              <button onClick={() => setnumBags(3)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >3</button>
+              <button onClick={() => setnumBags(4)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold" >4+</button>
             </div>
             <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
              value={zoneNum}/>
