@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import "./App.css";
+import Heat from './Heat';
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -20,6 +21,7 @@ export const LogBags = ({ authCode }) => {
   const [menuItem, setMenuItem] = useState(1);
   const [adminButtonLoading, setAdminButtonLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showHeatMap, setShowHeatMap] = useState(false);
 
 
   useEffect(() => {
@@ -114,6 +116,10 @@ export const LogBags = ({ authCode }) => {
     }
   }
 
+  const toggleHeatMap = () => {
+    setShowHeatMap(prev => !prev);
+  };
+
   const checkAdminPassword = () => {
     let password = 'adminpassword123'
     setAdminButtonLoading(true);
@@ -143,8 +149,8 @@ export const LogBags = ({ authCode }) => {
             <button onClick={() => {setMenuItem(1)}} className={`border-b-1 border-blue-300 w-full flex items-center justify-center h-12 font-bold ${menuItem == 1 ? 'text-green-700' : 'text-black'}`}>
               Log Bags
             </button>
-            <button onClick={() => {setMenuItem(2)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 2 ? 'text-green-700' : 'text-black'}`}>
-              Menu item 2
+            <button onClick={() => { setMenuItem(2); setShowHeatMap(true); }} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem === 2 ? 'text-green-700' : 'text-black'}`}>
+            Heat Map
             </button>
             <button onClick={() => {setMenuItem(3)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 3 ? 'text-green-700' : 'text-black'}`}>
               Menu item 3
@@ -223,3 +229,5 @@ export const LogBags = ({ authCode }) => {
   );
 
 }
+
+
