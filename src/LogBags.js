@@ -183,8 +183,8 @@ export const LogBags = ({ authCode }) => {
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
             <div className = "text-center w-full">
               <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2 text-xl font-bold" >-</button>
-              <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="bags" 
-              value={numBags} onChange={handleNumBagChange} inputProps={{ inputMode: 'numeric' }}/>
+              <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="bags" 
+              value={numBags} onChange={handleNumBagChange}/>
               <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2 text-xl font-bold">+</button>
               <br></br>
               <button onClick={() => setnumBags(1)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >1</button>
@@ -192,8 +192,8 @@ export const LogBags = ({ authCode }) => {
               <button onClick={() => setnumBags(3)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >3</button>
               <button onClick={() => setnumBags(4)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold" >4+</button>
             </div>
-            <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
-             value={zoneNum} inputProps={{ inputMode: 'numeric' }}/>
+            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
+             value={zoneNum}/>
             <div className="text-center">
               <label> 
                 Is this a correction to the previous entry?&nbsp;&nbsp;
