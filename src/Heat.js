@@ -54,9 +54,9 @@ const Heat = () => {
         ];
 
   return (
-    <div className="h-screen w-full flex justify-center items-center">
+    <div>
       <MapContainer
-        style={{ height: "400px", width: "800px" }} // Adjust dimensions as needed
+        style={{ height: "400px", width: "100%"}} // Adjust dimensions as needed
         bounds={bounds}
         zoom={5}
         key={Math.random()}
