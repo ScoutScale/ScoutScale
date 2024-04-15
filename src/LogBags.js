@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import "./App.css";
+import Heat from './Heat';
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -21,6 +22,7 @@ export const LogBags = ({ authCode }) => {
   const [menuItem, setMenuItem] = useState(1);
   const [adminButtonLoading, setAdminButtonLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showHeatMap, setShowHeatMap] = useState(false);
 
 
   useEffect(() => {
@@ -64,7 +66,6 @@ export const LogBags = ({ authCode }) => {
       setnumBags((preValue) => preValue === '' ? 0 : preValue - 1);
     }
   };
-
 
   const logBags = () => {
   if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value) > 0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value) > 0) {
@@ -116,6 +117,10 @@ export const LogBags = ({ authCode }) => {
     }
   }
 
+  const toggleHeatMap = () => {
+    setShowHeatMap(prev => !prev);
+  };
+
   const checkAdminPassword = () => {
     let password = 'adminpassword123'
     setAdminButtonLoading(true);
@@ -133,45 +138,47 @@ export const LogBags = ({ authCode }) => {
 
   return (
     <div>
-      <button onClick={() => {setMenuOpen(true)}} className="absolute left-3 top-10" >
-          <MenuIcon className="text-sm ml-5"/>
-      </button>
-      <div className={`absolute w-3/5 z-10 h-screen bg-[#fff8e8] border border-r-1 left-0 ${menuOpen ? 'translate-x-0 transition ease-in-out duration-300' : '-translate-x-[100%] transition ease-in-out duration-300'}`}>
-        <button onClick={() => {setMenuOpen(false)}}>
-          <ArrowBackIcon className="text-sm ml-5 mt-10" />
+      <div className="relative">
+        <button onClick={() => {setMenuOpen(true)}} className= "relative left-3 top-10" >
+            <MenuIcon className="text-sm ml-5"/>
         </button>
-        {adminAuthenticated ? (
-          <div className="w-full h-full flex items-center flex-col pt-10">
-            <button onClick={() => {setMenuItem(1)}} className={`border-b-1 border-blue-300 w-full flex items-center justify-center h-12 font-bold ${menuItem == 1 ? 'text-green-700' : 'text-black'}`}>
-              Log Bags
-            </button>
-            <button onClick={() => {setMenuItem(2)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 2 ? 'text-green-700' : 'text-black'}`}>
-              Driver Codes
-            </button>
-            <button onClick={() => {setMenuItem(3)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 3 ? 'text-green-700' : 'text-black'}`}>
-              Menu item 3
-            </button>
-          </div>
-        ) : (
-          <div className="w-full h-full flex justify-evenly items-center flex-col">
-            <div className="flex items-center flex-col">
-              {error !== '' && (
-                <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
-              )}
-              <div className="font-bold text-xl mb-10">Enter Admin Password:</div>
-              <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value); if(error !== ''){setError('')}}} />
+        <div className={`absolute w-3/5 z-10 top-0 h-screen bg-[#fff8e8] border border-r-1 left-0 ${menuOpen ? 'translate-x-0 transition ease-in-out duration-300' : '-translate-x-[100%] transition ease-in-out duration-300'}`}>
+          <button onClick={() => {setMenuOpen(false)}}>
+            <ArrowBackIcon className="text-sm ml-5 mt-10" />
+          </button>
+          {adminAuthenticated ? (
+            <div className="w-full h-full flex items-center flex-col pt-0">
+              <button onClick={() => {setMenuItem(1)}} className={`border-b-1 border-blue-300 w-full flex items-center justify-center h-12 font-bold ${menuItem == 1 ? 'text-green-700' : 'text-black'}`}>
+                Log Bags
+              </button>
+              <button onClick={() => { setMenuItem(2); setShowHeatMap(true); }} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem === 2 ? 'text-green-700' : 'text-black'}`}>
+              Heat Map
+              </button>
+              <button onClick={() => {setMenuItem(3)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 3 ? 'text-green-700' : 'text-black'}`}>
+                Driver Codes
+              </button>
             </div>
-            <button onClick={() => {checkAdminPassword()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 w-2/5 rounded-lg h-10 text-xl font-bold">
-              {adminButtonLoading ? (
-                <TailSpin className="w-5 h-5" />
-              ) : (
-                <div>Enter</div>
-              )}
-            </button>
-            <div />
-            <div />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full flex justify-evenly items-center flex-col">
+              <div className="flex items-center flex-col">
+                {error !== '' && (
+                  <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
+                )}
+                <div className="font-bold text-xl mb-10">Enter Admin Password:</div>
+                <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value); if(error !== ''){setError('')}}} />
+              </div>
+              <button onClick={() => {checkAdminPassword()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 w-2/5 rounded-lg h-10 text-xl font-bold">
+                {adminButtonLoading ? (
+                  <TailSpin className="w-5 h-5" />
+                ) : (
+                  <div>Enter</div>
+                )}
+              </button>
+              <div />
+              <div />
+            </div>
+          )}
+        </div>
       </div>
     {coords?.latitude && menuItem == 1 ? (
         <div>
@@ -184,12 +191,17 @@ export const LogBags = ({ authCode }) => {
             <div className="flex items-center flex-col flex items-center mt-10">
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
             <div className = "text-center w-full">
-              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2" >-</button>
-              <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-10" ref={bagRef} placeholder="bags" 
+              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2 text-xl font-bold" >-</button>
+              <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="bags" 
               value={numBags} onChange={handleNumBagChange}/>
-              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2">+</button>
+              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2 text-xl font-bold">+</button>
+              <br></br>
+              <button onClick={() => setnumBags(1)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >1</button>
+              <button onClick={() => setnumBags(2)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >2</button>
+              <button onClick={() => setnumBags(3)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >3</button>
+              <button onClick={() => setnumBags(4)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold" >4+</button>
             </div>
-            <input className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
+            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
              value={zoneNum}/>
             <div className="text-center">
               <label> 
@@ -208,9 +220,15 @@ export const LogBags = ({ authCode }) => {
             </div>
         </div>
     ) : menuItem == 2 ? (
-      <DriverCodes />
+      <div className="absolute z-0 w-full h-full">
+          <br></br><br></br><br></br><br></br><br></br><br></br>
+          <div className="text-center text-3xl font-bold m-5 mt-20">ScoutScale Heatmap</div>
+          <div>
+            <Heat />
+          </div>
+        </div>
     ) : menuItem == 3 ? (
-      <div>Place admin protected menu view here</div>
+      <DriverCodes />
     ) : (
       <div className="flex flex-col items-center justify-center w-full h-screen">
             <p className="w-4/5 text-center ">Please Select "Allow" on the prompt.</p>
@@ -220,3 +238,5 @@ export const LogBags = ({ authCode }) => {
   );
 
 }
+
+
