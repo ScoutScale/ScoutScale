@@ -6,6 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { firestore } from "./firebase";
 import { GeoPoint } from 'firebase/firestore';
 import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy, where } from "@firebase/firestore";
+import { DriverCodes } from './DriverCodes';
 
 export const LogBags = ({ authCode }) => {
   const [authLoading, setAuthLoading] = useState(false);
@@ -145,7 +146,7 @@ export const LogBags = ({ authCode }) => {
               Log Bags
             </button>
             <button onClick={() => {setMenuItem(2)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 2 ? 'text-green-700' : 'text-black'}`}>
-              Menu item 2
+              Driver Codes
             </button>
             <button onClick={() => {setMenuItem(3)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 3 ? 'text-green-700' : 'text-black'}`}>
               Menu item 3
@@ -206,9 +207,9 @@ export const LogBags = ({ authCode }) => {
             </button>
             </div>
         </div>
-    ) : coords?.latitude && menuItem == 2 ? (
-      <div>Place admin protected menu view here</div>
-    ) : coords?.latitude && menuItem == 3 ? (
+    ) : menuItem == 2 ? (
+      <DriverCodes />
+    ) : menuItem == 3 ? (
       <div>Place admin protected menu view here</div>
     ) : (
       <div className="flex flex-col items-center justify-center w-full h-screen">
