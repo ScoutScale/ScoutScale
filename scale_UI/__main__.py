@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import pandas as pd
@@ -59,7 +60,7 @@ class SideMenu(QFrame):
         self.delete_last_entry_button_width = menu_buttons.get("delete entry", {}).get("width")
         self.delete_last_entry_button_height = menu_buttons.get("delete entry", {}).get("height")
 
-        self.qr_code_button_image_location = menu_buttons.get("qr code", {}).get("image", {}).get("location")
+        self.qr_code_button_image_location = os.path.dirname(__file__) + "/" + menu_buttons.get("qr code", {}).get("image", {}).get("location")
         self.qr_code_button_image_width = menu_buttons.get("qr code", {}).get("image", {}).get("width")
         self.qr_code_button_image_height = menu_buttons.get("qr code", {}).get("image", {}).get("height")
         self.qr_code_button_width = menu_buttons.get("qr code", {}).get("width")
@@ -473,6 +474,9 @@ class MainWindow(QMainWindow):
     def get_data_folder_key(self):
         folder_key_path = self.config_parameters["Local Data Collection"]["folder"]
         self.folder_key = os.path.join(os.path.dirname(__file__), folder_key_path)
+        print(self.folder_key)
+
+
     def connect_to_output_file(self, file_name):
         self.prev_capture_available = False
 

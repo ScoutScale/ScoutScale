@@ -20,6 +20,9 @@ class ConfigurationWindow(QDialog):
         dialog_styles = configuration_view_style.get("dialogs", {})
         button_styles = configuration_view_style.get("buttons", {})
 
+    
+
+
         self.configuration_window_title = window_style.get("title")
         self.configuration_window_color = window_style.get("color")
         self.configuration_window_width = window_style.get("width")
@@ -56,6 +59,7 @@ class ConfigurationWindow(QDialog):
         self.radio_button_units_text_color = button_styles.get("radio buttons", {}).get("units", {}).get("text color")
         self.radio_button_units_text_size = button_styles.get("radio buttons", {}).get("units", {}).get("text size")
 
+        self.data_key = config_parameters["Local Data Collection"]["folder"]
         self.mock_ports = config_parameters["Serial"]["mock ports"]
         self.supported_units = config_parameters["weight units"]["compatible units"]
         self.data_folder = config_parameters["Local Data Collection"]["folder"]
@@ -164,10 +168,14 @@ class ConfigurationWindow(QDialog):
         if checked:
             self.change_units_signal.emit(unit)
 
+    def get_data_folder_key(self):
+        self.folder_key = os.path.join(os.path.dirname(__file__), "../" + self.data_key)
+
     def populate_files(self):
 
+        self.get_data_folder_key()
 
-        data_files = os.listdir(self.data_folder)
+        data_files = os.listdir(self.folder_key)
         for file_name in data_files:
 
             if ".csv"  in file_name:
