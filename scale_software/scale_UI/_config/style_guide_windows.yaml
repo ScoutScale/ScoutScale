@@ -1,0 +1,382 @@
+main view:
+  window:
+    title: Scale Interface
+    color: rgb(254,248,234)
+    width: 900
+    height: 400
+    auto size: false
+  header:
+    buttons:
+      ScoutScale:
+        image:
+          location: _resources/ss_logo.png
+          width: 75
+          height: 75
+        width: 75
+        height: 75
+        border: none
+      menu:
+        label: ☰
+        label font: Gill Sans
+        label text size: 32
+        label color: black
+        padding: -1px
+        text alignment: center
+        width: 45
+        height: 45
+        buttons:
+          checklist:
+            label: ☑
+            label font: Gill Sans
+            label text size: 26
+            label color: black
+            padding: -2px
+            text alignment: center
+            width: 28
+            height: 28
+          delete entry: 
+            label: ⌫
+            label font: Gill Sans
+            label text size: 18
+            label color: black
+            padding: -3px
+            text alignment: center
+            width: 30
+            height: 27
+          qr code:
+            image:
+              location: _resources/QR_icon.png
+              width: 30
+              height: 30
+            width: 30
+            height: 30
+            border: none
+          settings:
+            label: ⚙
+            label font: Gill Sans
+            label text size: 22
+            label color: black
+            padding: -7px
+            text alignment: center
+            width: 33
+            height: 33
+          debug:
+            label: 🐞
+            label font: Gill Sans
+            label text size: 20
+            label color: black
+            color: rgb(254,248,234)
+            padding: -2px
+            text alignment: center
+            width: 30
+            height: 30
+          exit:
+            label: ⓧ
+            label font: Gill Sans
+            label text size: 20
+            label color: red
+            color: rgb(254,248,234)
+            padding: -2px
+            text alignment: center
+            width: 30
+            height: 30
+    title: ScoutScale
+    font: Gill Sans
+    text size: 56
+    text color: black
+  dynamic font resizing:
+    enabled: True
+    default scale font size: 48
+    default button font size: 48
+    window divisor: 9
+    weight display correction: 10
+  labels:
+    current weight:
+      text: "Current Weight:"
+      font: Arial
+      text color: black
+  buttons:
+    capture button:
+      label: Capture Output
+      color: rgb(180, 120, 80)
+      font: Arial
+      text color: black
+      border: 2px solid black
+      border radius: 10px
+    tare button:
+      label: Tare Scale
+      color: rgb(180, 120, 80)
+      font: Arial
+      text color: black
+      border: 2px solid black
+      border radius: 10px
+    calibrate button:
+      label: Calibrate Scale
+      color: rgb(180, 120, 80)
+      font: Arial
+      text color: black
+      border: 2px solid black
+      border radius: 10px
+
+calibrate view:
+  window:
+    title: Calibrate View
+    color: rgb(46,46,46);
+    width: 400
+    height: 100
+    auto size: True
+  dialogs:
+    font: Arial
+    text size: 20
+    text color: white
+    zero: Please remove all weight from the table and press the ZERO button.
+    initial weight: Place a known weight on the table and press the CALIBRATE button.
+    subsequent weight: Place a different known weight on the table and press the CALIBRATE button.
+    calibrating: Calibrating...
+    calibration complete: Calibration Complete. You can now close this window
+    calibration aborted: Calibration Aborted. You can now close this window
+  buttons:
+    zero:
+      label: Zero
+      active color: rgb(54, 115, 210)
+      disabled color: rgb(46,46,46)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+    calibrate:
+      label: Calibrate
+      active color: rgb(54, 115, 210)
+      disabled color: rgb(46,46,46)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+
+capture view:
+  window:
+    title: Capture View
+    color: rgb(46,46,46)
+    width: 300
+    height: 100
+    auto size: True
+  dialogs:
+    weight:
+      text: "Captured Weight:"
+      font: Arial
+      text color: white
+      text size: 20
+    expected weight:
+      text: "Expected Weight:"
+      font: Arial
+      text color: white
+      text size: 20
+    zone:
+      text: Zone
+      font: Arial
+      text color: white
+      text size: 20
+  buttons:
+    confirm:
+      label: Confirm
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+
+checklist:
+  window:
+    title: Startup Checklist
+    color: rgb(254,248,234)
+    width: 400
+    height: 400
+    offset: 220
+    auto size: True
+    font: Arial
+    text color: black
+  text box:
+    width: 350
+    height: 400
+
+debug:
+  window:
+    title: Debug
+    color: rgb(254,248,234)
+    width: 400
+    height: 400
+    offset: 220
+    auto size: True
+    font: Arial
+    text color: black
+  text box:
+    width: 200
+    height: 200
+
+configuration view:
+  window:
+    title: Menu
+    color: rgb(46,46,46)
+    width: 400
+    height: 700
+    auto size: True
+  dialogs:
+    ports:
+      text: Serial Ports
+      font: Arial
+      text color: white
+      text size: 20
+    units:
+      text: Output Units
+      font: Arial
+      text color: white
+      text size: 20
+    output file:
+      text: Output File
+      font: Arial
+      text color: white
+      text size: 20
+    known weight:
+      text: Known Weight
+      font: Arial
+      text color: white
+      text size: 20
+
+  buttons:
+    radio buttons:
+      ports:
+        font: Arial
+        text color: white
+        text size: 16
+      units:
+        font: Arial
+        text color: white
+        text size: 16
+
+confirm action view:
+  window:
+    title: 
+    color: rgb(46,46,46)
+    width: 300
+    height: 300
+    auto size: True
+  dialog:
+    labels:
+      delete entry: Are you sure you would like to remove the previous entry?
+      end program: Are you sure you would like to terminate the program?
+    font: Arial
+    text color: white
+    text size: 20
+    width: 300
+    height: 80
+  buttons:
+    confirm:
+      label: Confirm
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+    cancel:
+      label: Cancel
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+
+info view:
+  window:
+    title: ScoutScale Information View
+    color: rgb(254,248,234)
+    width: 700
+    height: 700
+    auto size: False
+    font: Arial
+    text color: black
+  header:
+    images:
+      ScoutScale icon: 
+        location: _resources/ss_logo.png
+        width: 75
+        height: 75
+      dev team icon: 
+        location: _resources/team_icon.png
+        width: 50
+        height: 50
+    title: ScoutScale
+    font: Gill Sans
+    text size: 56
+    text color: black
+
+known weight view:
+  window:
+    title: 
+    color: rgb(46,46,46)
+    width: 200
+    height: 50
+    auto size: True
+  dialog: 
+    text: Enter the known weight
+    font: Arial
+    text size: 20
+    text color: white
+  buttons:
+    confirm:
+      label: Confirm
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+
+message view:
+  window:
+    title: 
+    color: rgb(46,46,46)
+    width: 100
+    height: 100
+    auto size: True
+  dialog: 
+    labels:
+      no prev entry: Cannot remove previous entry.
+    font: Arial
+    text size: 20
+    text color: white
+    width: 300
+    height: 40
+  buttons:
+    ok:
+      label: OK
+      color: rgb(54, 115, 210)
+      font: Arial
+      text color: white
+      text size: 16
+      border: 2px solid black
+      border radius: 10px
+
+qr code view:
+  window:
+    title: Scout Scale Web Application Code
+    color: white
+  qr:
+    width: 500
+    height: 500
+    
+tare view:
+  window: 
+    title: Tare View
+    color: rgb(46,46,46);
+    width: 200
+    height: 50
+  dialog:
+    font: Arial
+    text size: 20
+    text color: white
+    text: Taring...
