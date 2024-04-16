@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import "./App.css";
 import Heat from './Heat';
+import ViewTable from './ViewTable';
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -138,6 +139,16 @@ export const LogBags = ({ authCode }) => {
 
   return (
     <div>
+      {/*Dont move this menu item 2 down. Makes things go BOOM. remove this comment later*/}
+      {coords?.latitude && menuItem == 2 ? (
+        <div className="absolute z-0 w-full h-full">
+          <br></br><br></br><br></br><br></br><br></br>
+          <div className="text-center text-3xl font-bold m-5 mt-20">ScoutScale Heatmap</div>
+          <div>
+            <Heat />
+          </div>
+        </div>
+      ) : null}
       <div className="relative">
         <button onClick={() => {setMenuOpen(true)}} className= "relative left-3 top-10" >
             <MenuIcon className="text-sm ml-5"/>
@@ -152,10 +163,16 @@ export const LogBags = ({ authCode }) => {
                 Log Bags
               </button>
               <button onClick={() => { setMenuItem(2); setShowHeatMap(true); }} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem === 2 ? 'text-green-700' : 'text-black'}`}>
-              Heat Map
+                Heat Map
               </button>
               <button onClick={() => {setMenuItem(3)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 3 ? 'text-green-700' : 'text-black'}`}>
                 Driver Codes
+              </button>
+              <button onClick={() => {setMenuItem(4)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 4 ? 'text-green-700' : 'text-black'}`}>
+                View Data
+              </button>
+              <button onClick={() => {setMenuItem(5)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 5 ? 'text-green-700' : 'text-black'}`}>
+                Manual Entry
               </button>
             </div>
           ) : (
@@ -219,17 +236,13 @@ export const LogBags = ({ authCode }) => {
             </button>
             </div>
         </div>
-    ) : menuItem == 2 ? (
-      <div className="absolute z-0 w-full h-full">
-          <br></br><br></br><br></br><br></br><br></br><br></br>
-          <div className="text-center text-3xl font-bold m-5 mt-20">ScoutScale Heatmap</div>
-          <div>
-            <Heat />
-          </div>
-        </div>
     ) : menuItem == 3 ? (
       <DriverCodes />
-    ) : (
+    ) : menuItem == 4 ? (
+      <ViewTable />
+    ) : menuItem == 5 ? (
+      <div>manual entry</div>
+    ): (
       <div className="flex flex-col items-center justify-center w-full h-screen">
             <p className="w-4/5 text-center ">Please Select "Allow" on the prompt.</p>
         </div>
