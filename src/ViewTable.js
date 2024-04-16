@@ -18,7 +18,7 @@ const ViewTable = ({ authCode }) => {
   };
 
   const downloadInstructions = () => {
-    const fileId = '1vyCfCf5Ug5yvwm53zYCjR35LMDgauqow';
+    const fileId = '1OgQvGVYwtxyusZ1i-dPTAepIkMmMnT-p';
     const instructionsFile = `https://drive.google.com/uc?export=download&id=${fileId}`;
     window.location.href = instructionsFile;
   };
