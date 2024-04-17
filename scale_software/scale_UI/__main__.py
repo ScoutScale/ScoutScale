@@ -124,7 +124,7 @@ class SideMenu(QFrame):
         self.checklist_button = QPushButton(self.checklist_button_label)
         self.checklist_button.setFont(checklist_button_font)
         self.checklist_button.setStyleSheet(F"""
-                                  `          color: {self.checklist_button_label_color}; 
+                                            color: {self.checklist_button_label_color}; 
                                             padding-top: {self.checklist_button_padding}; 
                                             text-align: {self.checklist_button_text_alignment};""")
         self.checklist_button.setFlat(True)
