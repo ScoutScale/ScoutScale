@@ -124,7 +124,7 @@ class SideMenu(QFrame):
         self.checklist_button = QPushButton(self.checklist_button_label)
         self.checklist_button.setFont(checklist_button_font)
         self.checklist_button.setStyleSheet(F"""
-                                            color: {self.checklist_button_label_color}; 
+                                  `          color: {self.checklist_button_label_color}; 
                                             padding-top: {self.checklist_button_padding}; 
                                             text-align: {self.checklist_button_text_alignment};""")
         self.checklist_button.setFlat(True)
@@ -520,12 +520,10 @@ class MainWindow(QMainWindow):
     def capture_scale_output(self):
         temp_weight = self.weight
         capture_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
         date_header = self.config_parameters["Local Data Collection"]["labels"]["date"]
         weight_header = self.config_parameters["Local Data Collection"]["labels"]["weight"]
         unit_header = self.config_parameters["Local Data Collection"]["labels"]["units"]
         zone_header = self.config_parameters["Local Data Collection"]["labels"]["zone"]
-
         desktop = QApplication.desktop()
         desktop_rect = desktop.availableGeometry()
         capture_window = CaptureWindow(self.style_guide, temp_weight, self.units, self.debug.isVisible(), desktop_rect, self.known_weight)
