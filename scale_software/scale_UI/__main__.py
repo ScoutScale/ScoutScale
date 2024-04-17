@@ -292,7 +292,7 @@ class MainWindow(QMainWindow):
 
         header_buttons = header_style.get("buttons", {})
         scoutscale_button_info = header_buttons.get("ScoutScale", {})
-        self.scoutscale_image_location = scoutscale_button_info.get("image", {}).get("location")
+        self.scoutscale_image_location = os.path.dirname(__file__) + "/" + scoutscale_button_info.get("image", {}).get("location")
         self.scoutscale_image_width = scoutscale_button_info.get("image", {}).get("width")
         self.scoutscale_image_height = scoutscale_button_info.get("image", {}).get("height")
         self.scoutscale_button_width = scoutscale_button_info.get("width", {})

@@ -137,6 +137,19 @@ class CalibrateWindow(QDialog):
     def calibration_abort_confirm(self):
         self.calibration_ongoing = False
         self.dialog_label.setText(self.calibration_aborted_dialog)
+        self.zero_button.setStyleSheet(f"""QPushButton {{
+                                background-color: {self.zero_button_disabled_color};
+                                color: {self.zero_button_text_color}; 
+                                border: {self.zero_button_border}; 
+                                border-radius: {self.zero_button_border_radius}; }}""")
+        self.calibrate_button.setStyleSheet(f"""QPushButton {{
+                                      background-color: {self.calibrate_button_disabled_color};
+                                      color: {self.calibrate_button_text_color}; 
+                                      border: {self.calibrate_button_border}; 
+                                      border-radius: {self.calibrate_button_border_radius}; }}""")
+        self.zero_button_pressed = False
+
+        self.weight_calibration_active = False
 
     def closeEvent(self, event):
         if self.calibration_ongoing:
