@@ -8,12 +8,6 @@ Firebase:
     zone: Zone
   uploading data: True
 
-# this only affects visual elements
-# use "macos" for linux as well
-# currently supported Operating Systems: "windows" | "macos"
-
-Operating System: windows
-
 Local Data Collection:
   folder: data/
   labels:

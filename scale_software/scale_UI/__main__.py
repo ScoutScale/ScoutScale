@@ -196,9 +196,11 @@ class SideMenu(QFrame):
             QCoreApplication.quit()
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, platform_type):
         super().__init__()
         
+        self.platform_type = platform_type
+
         self.retrieve_config_file()
         self.retrieve_style_guide()
         self.get_firebase_key()
@@ -239,9 +241,8 @@ class MainWindow(QMainWindow):
     def retrieve_style_guide(self):
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, '_config/style_guide_')
-        platformType = self.config_parameters["Operating System"]
 
-        with open(filename + platformType + ".yaml", 'r', encoding='utf-8') as file:
+        with open(filename + self.platform_type + ".yaml", 'r', encoding='utf-8') as file:
             self.style_guide = safe_load(file)
 
     def connect_signals(self):
@@ -648,8 +649,16 @@ class MainWindow(QMainWindow):
         window_geometry.moveCenter(center_point)
         self.move(window_geometry.topLeft())
 
+    
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        operating_system = sys.argv[1]
+
     app = QApplication(sys.argv)
-    mainWin = MainWindow()
+    mainWin = MainWindow(operating_system)
+
+
+
     mainWin.show()
     sys.exit(app.exec_())
