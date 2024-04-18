@@ -56,7 +56,7 @@ const Heat = () => {
   return (
     <div>
       <MapContainer
-        style={{ height: "400px", width: "100%"}} // Adjust dimensions as needed
+        style={{ height: "800px", width: "100%"}} // Adjust dimensions as needed
         bounds={bounds}
         zoom={5}
         key={Math.random()}
@@ -76,7 +76,7 @@ const Heat = () => {
           useLocalExtrema={true}
         />
         <TileLayer
-          attribution="</a> Scout Scale"
+          attribution="</a> ScoutScale"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
       </MapContainer>

@@ -143,7 +143,6 @@ export const LogBags = ({ authCode }) => {
       {/*Dont move this menu item 2 down. Makes things go BOOM. remove this comment later*/}
       {coords?.latitude && menuItem == 2 ? (
         <div className="absolute z-0 w-full h-full">
-          <br></br><br></br><br></br><br></br><br></br>
           <div className="text-center text-3xl font-bold m-5 mt-20">ScoutScale Heatmap</div>
           <div>
             <Heat />
