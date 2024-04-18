@@ -19,12 +19,11 @@ const ViewTable = ({ authCode }) => {
   };
 
   const downloadInstructions = () => {
-    const fileId = '1G-2tUqAcbHBsiPnR-zHqFtdiezi6x2MB';
+    const fileId = '1utFMVrM7vzlKAMMQrR6C3KnpoUnDWd0J';
     const instructionsFile = `https://drive.google.com/uc?export=download&id=${fileId}`;
     window.location.href = instructionsFile;
   };
 
-  
   const sortBy = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -40,6 +39,12 @@ const ViewTable = ({ authCode }) => {
     const sorted = [...csvData].sort((a, b) => {
       const aValue = a[sortConfig.key];
       const bValue = b[sortConfig.key];
+  
+      const isEmpty = !aValue || !bValue || aValue.trim() === '' || bValue.trim() === '';
+      if (isEmpty) {
+        return 0;
+      }
+  
       if (aValue == null || bValue == null) {
         return 0;
       }
@@ -53,11 +58,11 @@ const ViewTable = ({ authCode }) => {
     });
     return sorted;
   };
-
+  
   return (
     <div>
         <p className="text-center mt-20">
-            Download <span onClick={downloadInstructions} className="download-link">this</span> zip file and follow instructions to view your data. Export the zip into a folder and read the README.txt
+            Download <span onClick={downloadInstructions} className="download-link">this</span> zip file and follow instructions to view your data. Begin by extracting the zip after download and then reading the Instructions.txt 
         </p>
         <p className="text-center">
             These instructions only work on Windows machines.
