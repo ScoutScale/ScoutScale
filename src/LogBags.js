@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import "./App.css";
 import Heat from './Heat';
 import ViewTable from './ViewTable';
+import ManualEntry from './ManualEntry';
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -224,7 +225,6 @@ export const LogBags = ({ authCode }) => {
               <label> 
                 Is this a correction to the previous entry?&nbsp;&nbsp;
                 <input type="checkbox" checked={isChecked} onChange={valueChange}/>
-                    <p>Warning: This WILL delete and replace your last entry. This action cannot be undone.</p>
               </label>
             </div>
             <button onClick={() => {logBags()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
@@ -241,7 +241,7 @@ export const LogBags = ({ authCode }) => {
     ) : menuItem == 4 ? (
       <ViewTable />
     ) : menuItem == 5 ? (
-      <div>manual entry</div>
+      <ManualEntry authCode={authCode}/>
     ): (
       <div className="flex flex-col items-center justify-center w-full h-screen">
             <p className="w-4/5 text-center ">Please Select "Allow" on the prompt.</p>
