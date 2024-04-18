@@ -36,7 +36,6 @@ class MockSerial:
             self.calibrate_abort = False
         else:
             send_value = f"m:m:m:m"
-            send_value = f"37.5:22.5:3.75:20"
         return send_value.encode('utf-8')
 
     def close(self):

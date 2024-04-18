@@ -531,10 +531,20 @@ class MainWindow(QMainWindow):
         if capture_window.exec_() == QDialog.Accepted:
             zone = capture_window.text_box.text()
             
-            if zone != "" and temp_weight != 0:
-                pd.DataFrame([[capture_date, temp_weight, self.units, zone]], columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, mode='a', header=False, index=False)
-                self.send_to_backend(temp_weight, zone) 
-                self.prev_capture_available = True
+            try:
+                test_zone = int(zone) ## dummy to catch not integer zone
+
+                if temp_weight != 0:
+                    pd.DataFrame([[capture_date, temp_weight, self.units, zone]], columns=[date_header, weight_header, unit_header, zone_header]).to_csv(self.csv_file, mode='a', header=False, index=False)
+                    self.send_to_backend(temp_weight, zone) 
+                    self.prev_capture_available = True
+                else:
+                    window = MessageWindow(self.style_guide, "zero value")
+                    window.exec()
+                    
+            except ValueError:
+                window = MessageWindow(self.style_guide, "not number")
+                window.exec()
     
     def delete_previous_capture(self):
         confirm_window = ConfirmWindow(self.style_guide, "delete entry")

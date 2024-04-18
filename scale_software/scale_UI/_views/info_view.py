@@ -2,9 +2,29 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
+import os
+
 info_text = """
 <p style="font-size: 24px;">Welcome to <b>ScoutScale</b></p>
-<p style="font-size: 32px;"><b>This window is under development.<b></p>
+<p style="font-size: 16px;">a one-of-a-kind, digital food-weighing scale crafted to support The Boy Scouts of America in their mission to maximize the donated food through their Scouting For Food program. </p>
+<p style="font-size: 24px;"><b>Main Menu Buttons<b></p>
+<p style="font-size: 16px;">Capture Output - Used to capture the current weight of items on the scale.</p>
+<p style="font-size: 16px;">Tare Scale - Used to zero out the scale.</p>
+<p style="font-size: 16px;">Calibrate Scale - Used to calibrate the scale to output the correct unit values.</p>
+<p style="font-size: 16px;">☰ - Toggles the side menu.</p>
+<p style="font-size: 24px;"><b>Side Menu Buttons<b></p>
+<p style="font-size: 16px;">⚙ - Settings Menu</p>
+<p style="font-size: 16px;">☑ - Toggle Checklist</p>
+<p style="font-size: 16px;">⌫ - Delete Previous Entry</p>
+<p style="font-size: 16px;">🐞 - Toggle Debugging Mode</p>
+<p style="font-size: 16px;">ⓧ - Exit Program</p>
+<p style="font-size: 16px;">
+<p style="font-size: 24px;"><b>Additional Info<b></p>
+Please note that additional operational information can be found in the users manual hosted in the ScoutScale GitHub repository. 
+</p>
+<p>GitHub Repository:<br>
+    <a href="https://github.com/tsallwasser/ScoutScale/tree/master">https://github.com/tsallwasser/ScoutScale/tree/master</a>
+</p>
 """
 
 
@@ -25,6 +45,8 @@ class InfoWindow(QDialog):
         self.info_window_auto_size = window_style.get("auto size")
         self.info_window_font = window_style.get("font")
         self.info_window_text_color = window_style.get("text color")
+        self.info_txt_box_width = window_style.get("desc width")
+        self.info_txt_box_height = window_style.get("desc height")
 
 
         self.info_header_title = header_style.get("title")
@@ -33,10 +55,10 @@ class InfoWindow(QDialog):
         self.info_header_text_color = header_style.get("text color")
 
 
-        self.scoutscale_icon_location = image_styles.get("ScoutScale icon", {}).get("location")
+        self.scoutscale_icon_location = os.path.dirname(__file__) + "/../" + image_styles.get("ScoutScale icon", {}).get("location")
         self.scoutscale_icon_width = image_styles.get("ScoutScale icon", {}).get("width")
         self.scoutscale_icon_height = image_styles.get("ScoutScale icon", {}).get("height")
-        self.dev_team_icon_location = image_styles.get("dev team icon", {}).get("location")
+        self.dev_team_icon_location = os.path.dirname(__file__) + "/../" + image_styles.get("dev team icon", {}).get("location")
         self.dev_team_icon_width = image_styles.get("dev team icon", {}).get("width")
         self.dev_team_icon_height = image_styles.get("dev team icon", {}).get("height") 
 
@@ -77,6 +99,7 @@ class InfoWindow(QDialog):
         info_body_text.setReadOnly(True)
         info_body_text.setStyleSheet("border: none;")
         info_body_text.setHtml(info_text)
+        info_body_text.setFixedSize(self.info_txt_box_width, self.info_txt_box_height)
 
         layout.addWidget(info_body_text)
 

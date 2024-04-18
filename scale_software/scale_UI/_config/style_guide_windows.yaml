@@ -174,7 +174,7 @@ capture view:
       text color: white
       text size: 20
     zone:
-      text: Zone
+      text: Zone (integer)
       font: Arial
       text color: white
       text size: 20
@@ -299,6 +299,8 @@ info view:
     auto size: False
     font: Arial
     text color: black
+    desc width: 700
+    desc height: 700
   header:
     images:
       ScoutScale icon: 
@@ -346,10 +348,12 @@ message view:
   dialog: 
     labels:
       no prev entry: Cannot remove previous entry.
+      not number: Incorrect zone value, capture discarded.
+      zero value: Zero weight recorded, capture discarded.
     font: Arial
     text size: 20
     text color: white
-    width: 300
+    width: 500
     height: 40
   buttons:
     ok:
