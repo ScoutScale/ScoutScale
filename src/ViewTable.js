@@ -37,10 +37,19 @@ const ViewTable = ({ authCode }) => {
     if (!sortConfig.key) return csvData;
     
     const sorted = [...csvData].sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
-  
-      const isEmpty = !aValue || !bValue || aValue.trim() === '' || bValue.trim() === '';
+      var isEmpty = false;
+      var aValue = a[sortConfig.key];
+      var bValue = b[sortConfig.key];
+      if (!isNaN(a[sortConfig.key]) && !isNaN(b[sortConfig.key]))
+      {
+        aValue = parseFloat(a[sortConfig.key]);
+        bValue = parseFloat(b[sortConfig.key]);
+        isEmpty = !aValue || !bValue;
+      }
+      else
+      {
+        isEmpty = !aValue || !bValue || aValue.trim() === '' || bValue.trim() === '';
+      }
       if (isEmpty) {
         return 0;
       }
