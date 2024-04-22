@@ -599,7 +599,7 @@ class MainWindow(QMainWindow):
         self.debug.units = units
 
     def mock_serial_display(self):
-        self.weight_display.setText("Mock Serial | Change Serial Port")
+        self.weight_display.setText("Change Serial Port")
 
     def update_known_weight(self, known_weight):
         self.known_weight = known_weight
