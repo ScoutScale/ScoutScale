@@ -88,7 +88,7 @@ const ManualEntry = () => {
             onChange={(e) => setAuthCode(e.target.value)}
             placeholder="Auth Code"
             className="rounded-lg border border-black px-4 py-2 mb-4"
-            onKeyDown={(e) => {if(e.key === 'Enter'){handleManualEntry()}}}
+            onKeyDown={handleManualEntry}
         />
         <button onClick={handleManualEntry} className="flex items-center justify-center bg-green-800 text-white rounded-lg px-6 py-3">
           {manualLoading ? <TailSpin className="w-6 h-6 mr-2" /> : <AddCircleOutlineIcon className="mr-2" />}

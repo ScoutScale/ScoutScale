@@ -46,7 +46,7 @@ function App() {
           {error !== '' && (
             <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
           )}
-          <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-20" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="auth code" onKeyDown={(e) => {if(e.key === 'Enter'){enter()}}}/>
+          <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-20" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="auth code"/>
           <button onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
             {authLoading ? (
               <TailSpin className="w-5 h-5" />
