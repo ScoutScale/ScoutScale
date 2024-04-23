@@ -179,7 +179,7 @@ export const LogBags = ({ authCode }) => {
                         <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
                     )}
                     <div className="font-bold text-xl mb-10">Enter Admin Password:</div>
-                    <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value); if(error !== ''){setError('')}}} />
+                    <input className="rounded-xl input w-3/5 h-10 text-center placeholder:bold" type="password" ref={adminPasswordRef} placeholder="password" onChange={(e) => {setAdminPassword(e.target.value); if(error !== ''){setError('')}}} onKeyDown={(e) => {if(e.key === 'Enter'){checkAdminPassword()}}}/>
                   </div>
                   <button onClick={() => {checkAdminPassword()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 w-2/5 rounded-lg h-10 text-xl font-bold">
                     {adminButtonLoading ? (
