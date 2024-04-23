@@ -166,7 +166,7 @@ export const LogBags = ({ authCode }) => {
                     Driver Codes
                   </button>
                   <button onClick={() => {setMenuItem(4)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem === 4 ? 'text-green-700' : 'text-black'}`}>
-                    View Data
+                    Export Data
                   </button>
                   <button onClick={() => {setMenuItem(5)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem === 5 ? 'text-green-700' : 'text-black'}`}>
                     Manual Entry
