@@ -213,29 +213,15 @@ export const LogBags = ({ authCode }) => {
                   <img alt="logo" src={require("./scout_scale_logo.jpeg")} className=""/>
               </div>
             </div>
-            <div className="flex items-center flex-col flex items-center mt-10">
-            <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
-<<<<<<< HEAD
-            <div className = "text-center w-full">
-              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2 text-xl font-bold" >-</button>
-              <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="Bags" 
-              value={numBags} onChange={handleNumBagChange}/>
-              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2 text-xl font-bold">+</button>
-              <br></br>
-              <button onClick={() => setnumBags(1)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >1</button>
-              <button onClick={() => setnumBags(2)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >2</button>
-              <button onClick={() => setnumBags(3)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >3</button>
-              <button onClick={() => setnumBags(4)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold" >4+</button>
-            </div>
-            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="Zone" onChange={handleZoneChange}
-=======
+            <div className="flex items-center flex-col flex items-center mt-5">
+            <div className="text-slate-950 text-3xl font-bold mt-5 mb-10">Log Bag Pickup</div>
             <div className="text-center w-full">
                 <div className="flex items-center justify-center space-x-2"> {/* Ensures elements are aligned and spaced */}
                     {showIncrementDecrementButtons && (
                         <button onClick={decrementCount} className="rounded-xl button w-1/6 h-10 text-xl font-bold">-</button>
                     )}
                     <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold" ref={bagRef} 
-                          placeholder="bags" value={numBags} onChange={handleNumBagChange}/>
+                          placeholder="Bags" value={numBags} onChange={handleNumBagChange}/>
                     {showIncrementDecrementButtons && (
                         <button onClick={incrementCount} className="rounded-xl button w-1/6 h-10 text-xl font-bold">+</button>
                     )}
@@ -247,22 +233,22 @@ export const LogBags = ({ authCode }) => {
                 <button onClick={() => handleSetNumBags(4)} className="justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold">4+</button>
             </div>
 
-            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
->>>>>>> 4e599fa0a6766498c4831189ba472d580fb6141d
+            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-5" ref={zoneRef} placeholder="Zone" onChange={handleZoneChange}
              value={zoneNum}/>
-            <div className="text-center">
-              <label> 
-                Is this a correction to the previous entry?&nbsp;&nbsp;
-                <input type="checkbox" checked={isChecked} onChange={valueChange}/>
-              </label>
-            </div>
-            <button onClick={() => {logBags()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
+            
+            <button onClick={() => {logBags()}} className="flex justify-center items-center text-slate-50 button bg-cyan-50 mt-5 mb-5 w-1/5 rounded-lg h-10 text-xl font-bold">
                 {authLoading ? (
                 <TailSpin className="w-5 h-5" />
                 ) : (
                 <div>Log</div>
                 )}
             </button>
+            </div>
+            <div className="text-center">
+              <label> 
+                Is this a correction to the previous entry?&nbsp;&nbsp;
+                <input type="checkbox" checked={isChecked} onChange={valueChange}/>
+              </label>
             </div>
         </div>
     ) : menuItem == 3 ? (

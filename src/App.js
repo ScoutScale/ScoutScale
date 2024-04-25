@@ -41,13 +41,13 @@ function App() {
         <LogBags authCode={authCode} />
       ) : (
         <div className="flex items-center flex-col flex items-center">
-          <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to ScoutScale!</div>
-          <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-2/5 h-2/5 mb-10 mt-10"/>
+          <div className="text-slate-950 text-3xl font-bold mt-1">Welcome to ScoutScale!</div>
+          <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-50% h-2/5 mb-1 mt-1"/>
           {error !== '' && (
             <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
           )}
-          <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-20" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="Driver Code"/>
-          <button onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
+          <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-5" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="Driver Code"/>
+          <button onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-1 w-1/5 rounded-lg h-10 text-xl font-bold">
             {authLoading ? (
               <TailSpin className="w-5 h-5" />
             ) : (
