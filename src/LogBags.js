@@ -25,6 +25,8 @@ export const LogBags = ({ authCode }) => {
   const [adminButtonLoading, setAdminButtonLoading] = useState(false);
   const [error, setError] = useState('');
   const [showHeatMap, setShowHeatMap] = useState(false);
+  const [showIncrementDecrementButtons, setShowIncrementDecrementButtons] = useState(false);
+
 
 
   useEffect(() => {
@@ -68,6 +70,12 @@ export const LogBags = ({ authCode }) => {
       setnumBags((preValue) => preValue === '' ? 0 : preValue - 1);
     }
   };
+
+  const handleSetNumBags = (number) => {
+    setnumBags(number);
+    setShowIncrementDecrementButtons(number === 4);  // Only show + and - if the number is 4
+};
+
 
   const logBags = () => {
   if (bagRef.current.value !== "" && zoneRef.current.value !== "" && Number.isInteger(parseInt(bagRef.current.value)) && parseInt(bagRef.current.value) > 0 && Number.isInteger(parseInt(zoneRef.current.value)) && parseInt(zoneRef.current.value) > 0) {
@@ -207,17 +215,24 @@ export const LogBags = ({ authCode }) => {
             </div>
             <div className="flex items-center flex-col flex items-center mt-10">
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
-            <div className = "text-center w-full">
-              <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2 text-xl font-bold" >-</button>
-              <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="bags" 
-              value={numBags} onChange={handleNumBagChange}/>
-              <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2 text-xl font-bold">+</button>
-              <br></br>
-              <button onClick={() => setnumBags(1)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >1</button>
-              <button onClick={() => setnumBags(2)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >2</button>
-              <button onClick={() => setnumBags(3)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >3</button>
-              <button onClick={() => setnumBags(4)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold" >4+</button>
+            <div className="text-center w-full">
+                <div className="flex items-center justify-center space-x-2"> {/* Ensures elements are aligned and spaced */}
+                    {showIncrementDecrementButtons && (
+                        <button onClick={decrementCount} className="rounded-xl button w-1/6 h-10 text-xl font-bold">-</button>
+                    )}
+                    <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold" ref={bagRef} 
+                          placeholder="bags" value={numBags} onChange={handleNumBagChange}/>
+                    {showIncrementDecrementButtons && (
+                        <button onClick={incrementCount} className="rounded-xl button w-1/6 h-10 text-xl font-bold">+</button>
+                    )}
+                </div>
+                <br></br>
+                <button onClick={() => handleSetNumBags(1)} className="justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold">1</button>
+                <button onClick={() => handleSetNumBags(2)} className="justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold">2</button>
+                <button onClick={() => handleSetNumBags(3)} className="justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold">3</button>
+                <button onClick={() => handleSetNumBags(4)} className="justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold">4+</button>
             </div>
+
             <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
              value={zoneNum}/>
             <div className="text-center">
