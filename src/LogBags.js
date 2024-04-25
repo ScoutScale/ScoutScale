@@ -172,7 +172,7 @@ export const LogBags = ({ authCode }) => {
                 Export Data
               </button>
               <button onClick={() => {setMenuItem(5)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 5 ? 'text-green-700' : 'text-black'}`}>
-                Manual Entry
+                Scale Manual Entry
               </button>
             </div>
           ) : (
@@ -209,7 +209,7 @@ export const LogBags = ({ authCode }) => {
             <div className="text-slate-950 text-3xl font-bold mt-10 mb-20">Log Bag Pickup</div>
             <div className = "text-center w-full">
               <button onClick={decrementCount} className = "rounded-xl button w-1/6 h-10 mr-2 text-xl font-bold" >-</button>
-              <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="bags" 
+              <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-2" ref={bagRef} placeholder="Bags" 
               value={numBags} onChange={handleNumBagChange}/>
               <button onClick={incrementCount} className = "rounded-xl button w-1/6 h-10 ml-2 text-xl font-bold">+</button>
               <br></br>
@@ -218,7 +218,7 @@ export const LogBags = ({ authCode }) => {
               <button onClick={() => setnumBags(3)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-2 button text-xl font-bold" >3</button>
               <button onClick={() => setnumBags(4)} className = "justify-center items-center rounded-xl w-1/6 h-10 m-1 mb-10 button text-xl font-bold" >4+</button>
             </div>
-            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="zone" onChange={handleZoneChange}
+            <input type="tel" className="rounded-xl input w-2/5 h-10 text-center placeholder:bold mb-20" ref={zoneRef} placeholder="Zone" onChange={handleZoneChange}
              value={zoneNum}/>
             <div className="text-center">
               <label> 
