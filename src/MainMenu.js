@@ -23,6 +23,7 @@ export const MainMenu = ({ authCode }) => {
   const [coords, setCoords] = useState(null);
   const [isChecked, setChecked] = useState(false);
   const [error, setError] = useState('');
+  const [scrollEnabled, setScrollEnabled] = useState(false); 
 
   
   useEffect(() => {
@@ -44,7 +45,13 @@ export const MainMenu = ({ authCode }) => {
   const handleMenuItemClick = (item) => {
     setMenuOpen(false); // Close the menu when a menu item is clicked
     setMenuItem(item); // Set the selected menu item
+    if (item === 3 || item === 4) {
+      setScrollEnabled(true);
+    } else {
+      setScrollEnabled(false);
+    }
   };
+
 
   const checkAdminPassword = () => {
     let password = 'adminpassword123'
@@ -60,6 +67,18 @@ export const MainMenu = ({ authCode }) => {
     }, Math.floor((Math.random() * 1000) + 100))
 
   }
+
+  useEffect(() => {
+    if (!scrollEnabled) {
+      document.body.style.overflow = 'hidden'; // Prevent scrolling on the body element
+    } else {
+      document.body.style.overflow = 'visible'; // Re-enable scrolling
+    }
+    return () => {
+      document.body.style.overflow = 'visible'; // Re-enable scrolling when component unmounts
+    };
+  }, [scrollEnabled]);
+
 
   return (
     <div>

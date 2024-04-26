@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import "./App.css";
 import { firestore } from "./firebase";
 import { GeoPoint } from 'firebase/firestore';
 import { collection, addDoc, query, getDocs, deleteDoc, limit, orderBy, where } from "@firebase/firestore";
@@ -106,14 +107,14 @@ const BagLogger = ({ authCode }) => {
     }
 
   return (
-    <div>
+    <div className= "bag-logger-container">
       <div className="flex flex-row items-center justify-between w-full">
         <div />
         <div className="w-1/5 h-1/5 self-end">
           <img alt="logo" src={require("./scout_scale_logo.jpeg")} className=""/>
         </div>
       </div>
-      <div className="flex items-center flex-col flex items-center">
+      <div className="flex items-center flex-col flex items-center" >
         <div className="text-slate-950 text-3xl font-bold mt-5 mb-10">Log Bag Pickup</div>
         <div className="text-center w-full">
           <div className="flex items-center justify-center space-x-2">

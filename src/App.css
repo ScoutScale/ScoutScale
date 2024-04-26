@@ -9,3 +9,10 @@
 .button {
     background-color: #1c7d66;
 }
+
+.bag-logger-container {
+    overflow: hidden;
+    height: screen;
+    width: screen;
+    background-position: center;
+  }
