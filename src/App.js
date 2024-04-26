@@ -36,13 +36,13 @@ function App() {
   }
 
   return (
-    <div className="background w-full h-screen" >
+    <div className="bag-logger-container" >
       {authenticated ? (
         <MainMenu authCode={authCode} />
       ) : (
         <div className="flex items-center flex-col flex items-center">
           <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to ScoutScale!</div>
-          <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-50% h-2/5 mb-1 mt-1"/>
+          <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-2/5 h-2/5 mb-1 mt-1"/>
           {error !== '' && (
             <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
           )}

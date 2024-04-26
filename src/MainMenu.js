@@ -43,8 +43,8 @@ export const MainMenu = ({ authCode }) => {
   };
 
   const handleMenuItemClick = (item) => {
-    setMenuOpen(false); // Close the menu when a menu item is clicked
-    setMenuItem(item); // Set the selected menu item
+    setMenuOpen(false); 
+    setMenuItem(item); 
     if (item === 3 || item === 4) {
       setScrollEnabled(true);
     } else {
@@ -70,12 +70,12 @@ export const MainMenu = ({ authCode }) => {
 
   useEffect(() => {
     if (!scrollEnabled) {
-      document.body.style.overflow = 'hidden'; // Prevent scrolling on the body element
+      document.body.style.overflow = 'hidden'; 
     } else {
-      document.body.style.overflow = 'visible'; // Re-enable scrolling
+      document.body.style.overflow = 'visible'; 
     }
     return () => {
-      document.body.style.overflow = 'visible'; // Re-enable scrolling when component unmounts
+      document.body.style.overflow = 'visible'; 
     };
   }, [scrollEnabled]);
 
@@ -91,12 +91,12 @@ export const MainMenu = ({ authCode }) => {
         </div>
       ) : null}
       <div className="relative h-0">
-        <button onClick={() => {setMenuOpen(true)}} className= "relative left-3 top-12" >
+        <button onClick={() => {setMenuOpen(true)}} className= "relative left-2 top-5" >
             <MenuIcon className="text-sm ml-5"/>
         </button>
         <div className={`absolute w-screen z-10 top-0 h-screen bg-[#fff8e8] border border-r-1 left-0 ${menuOpen ? 'translate-x-0 transition ease-in-out duration-300' : '-translate-x-[100%] transition ease-in-out duration-300'}`}>
           <button onClick={() => {setMenuOpen(false)}}>
-            <ArrowBackIcon className="text-sm ml-8 mt-12" />
+            <ArrowBackIcon className="text-sm ml-7 mt-5" />
           </button>
           {adminAuthenticated ? (
             <div className="w-full h-100vh flex items-center flex-col pt-0">
