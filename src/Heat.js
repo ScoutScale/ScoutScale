@@ -56,7 +56,7 @@ const Heat = () => {
   return (
     <div>
       <MapContainer
-        style={{ height: "800px", width: "100%"}} // Adjust dimensions as needed
+        style={{ height: "85vh", width: "100%"}}
         bounds={bounds}
         zoom={5}
         key={Math.random()}
@@ -80,7 +80,7 @@ const Heat = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
       </MapContainer>
-    </div>
+  </div>
   );
 };
 

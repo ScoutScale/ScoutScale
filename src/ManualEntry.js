@@ -50,20 +50,20 @@ const ManualEntry = () => {
     <div className="flex flex-col items-center justify-center w-full mt-20">
       <div className="text-3xl font-bold mb-6 mt-20">Scale Manual Entry</div>
       <div className="flex flex-col items-center justify-center w-full">
-        <div className="flex items-center mb-4">
+        <div className="flex justify-center mb-4">
           <input
             type="number"
             value={Weight}
             onChange={(e) => setWeight(e.target.value)}
             placeholder="Weight"
-            className="rounded-lg border border-black px-4 py-2 mr-2"
+            className="rounded-lg w-2/5 h-10 border border-black px-4 py-2 mr-1"
           />
           <input
             type="number"
             value={Zone}
             onChange={(e) => setZone(e.target.value)}
             placeholder="Zone"
-            className="rounded-lg border border-black px-4 py-2"
+            className="rounded-lg w-2/5 h-10 border border-black px-4 py-2 ml-1"
           />
         </div>
         <div>

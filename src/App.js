@@ -4,7 +4,7 @@ import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import { collection, query, where, getDocs } from "@firebase/firestore";
 import { useGeolocated } from "react-geolocated";
-import { LogBags } from './LogBags';
+import { MainMenu } from './MainMenu';
 import { firestore } from "./firebase";
 
 function App() {
@@ -38,10 +38,10 @@ function App() {
   return (
     <div className="background w-full h-screen" >
       {authenticated ? (
-        <LogBags authCode={authCode} />
+        <MainMenu authCode={authCode} />
       ) : (
         <div className="flex items-center flex-col flex items-center">
-          <div className="text-slate-950 text-3xl font-bold mt-1">Welcome to ScoutScale!</div>
+          <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to ScoutScale!</div>
           <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-50% h-2/5 mb-1 mt-1"/>
           {error !== '' && (
             <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
