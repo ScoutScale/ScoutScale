@@ -99,7 +99,7 @@ export const MainMenu = ({ authCode }) => {
             <ArrowBackIcon className="text-sm ml-7 mt-5" />
           </button>
           {adminAuthenticated ? (
-            <div className="w-full h-100vh flex items-center flex-col pt-0">
+            <div className="w-full h-full flex items-center flex-col pt-0">
               <button onClick={() => {handleMenuItemClick(1)}} className={`border-b-1 border-blue-300 w-full flex items-center justify-center h-12 font-bold ${menuItem == 1 ? 'text-green-700' : 'text-black'}`}>
                 Log Bags
               </button>
@@ -139,7 +139,7 @@ export const MainMenu = ({ authCode }) => {
         </div>
       </div>
       {coords?.latitude && menuItem == 1 ? (
-        <BagLogger authCode={authCode} /> // Replace menu item 1 with BagLogger component
+        <BagLogger authCode={authCode} /> 
       ) : menuItem == 3 ? (
         <DriverCodes />
       ) : menuItem == 4 ? (
