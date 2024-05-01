@@ -1,0 +1,6 @@
+.DS_Store
+/scale_UI/data/
+/.idea
+/scale_UI/_views/__pycache__/
+/scale_UI/_serial/__pychache__/
+*.pyc
