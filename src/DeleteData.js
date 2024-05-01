@@ -39,6 +39,7 @@ const DeleteData = () => {
           <div className="text-1x1 mb-6 mt-10">Type the admin password to delete all data in the firebase</div>
             <div className="flex justify-center mb-4">
               <input
+                placeholder="password"
                 type="password"
                 value={delString}
                 onChange={(e) => setDelString(e.target.value)}
