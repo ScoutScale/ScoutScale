@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import "./App.css";
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -17,6 +17,20 @@ function App() {
   const authRef = useRef();
   const ref = collection(firestore, "Authentication");
 
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        document.getElementById("enterButton").click(); // Trigger click event of Enter button
+      }
+    };
+
+    document.addEventListener('keypress', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keypress', handleKeyPress);
+    };
+  }, []);
+
   const enter = async () => {
     setAuthLoading(true);
     const q = query(ref, where("code", "==", parseInt(authRef.current.value)));
@@ -32,8 +46,7 @@ function App() {
       setAuthLoading(false);
       setError('No matching auth codes exist.')
     }
-
-  }
+  };
 
   return (
     <div className="bag-logger-container" >
@@ -47,7 +60,7 @@ function App() {
             <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
           )}
           <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-5" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="Driver Code"/>
-          <button onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-1 w-1/5 rounded-lg h-10 text-xl font-bold">
+          <button id="enterButton" onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-1 w-1/5 rounded-lg h-10 text-xl font-bold">
             {authLoading ? (
               <TailSpin className="w-5 h-5" />
             ) : (

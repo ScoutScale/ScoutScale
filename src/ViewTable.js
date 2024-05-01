@@ -70,7 +70,7 @@ const ViewTable = ({ authCode }) => {
   
   return (
     <div>
-        <br></br>
+        <br></br><br></br><br></br>
         <div className="text-center text-3xl font-bold mt-20">Export and view your data.</div>
         <p className="text-center mt-5">
             Download <span onClick={downloadInstructions} className="download-link">this</span> zip file and follow instructions to view your data. Begin by extracting the zip after download and then reading the Instructions.txt 
