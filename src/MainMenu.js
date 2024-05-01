@@ -10,7 +10,7 @@ import Heat from './Heat';
 import { DriverCodes } from './DriverCodes';
 import ViewTable from './ViewTable';
 import ManualEntry from './ManualEntry';
-
+import DeleteData from './DeleteData';
 
 export const MainMenu = ({ authCode }) => {
   const [newLocation, setNewLocation] = useState(0);
@@ -79,7 +79,7 @@ export const MainMenu = ({ authCode }) => {
     };
   }, [scrollEnabled]);
 
-
+  
   return (
     <div>
       {coords?.latitude && menuItem == 2 ? (
@@ -115,6 +115,9 @@ export const MainMenu = ({ authCode }) => {
               <button onClick={() => {handleMenuItemClick(5)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 5 ? 'text-green-700' : 'text-black'}`}>
                 Scale Manual Entry
               </button>
+              <button onClick={() => {handleMenuItemClick(6)}} className={`w-full flex items-center justify-center h-12 font-bold ${menuItem == 6 ? 'text-green-700' : 'text-black'}`}>
+                Delete All Database Data
+              </button>
             </div>
           ) : (
             <div className="w-full h-full flex justify-evenly items-center flex-col">
@@ -146,6 +149,8 @@ export const MainMenu = ({ authCode }) => {
         <ViewTable />
       ) : menuItem == 5 ? (
         <ManualEntry authCode={authCode}/>
+      ) : menuItem == 6 ? (
+        <DeleteData/>
       ): (
         <div className="flex flex-col items-center justify-center w-full h-screen">
           <p className="w-4/5 text-center ">Please Select "Allow" on the prompt.</p>

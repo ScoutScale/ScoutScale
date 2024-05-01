@@ -22,7 +22,7 @@ const BagLogger = ({ authCode }) => {
 
   const bagRef = useRef();
   const zoneRef = useRef();
-  const ref = collection(firestore, "React App");
+  const ref = collection(firestore, "test App");
 
   const handleNumBagChange = () => {
     const temp = bagRef.current.value.trim();
