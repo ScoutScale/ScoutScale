@@ -21,7 +21,7 @@ Local Data Collection:
 Serial:
   baudrate: 57600
   mock ports:
-  - /dev/ttyUSB0
+  - /changeme
 
 weight units:
   default unit: lb

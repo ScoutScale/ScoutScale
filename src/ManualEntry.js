@@ -7,37 +7,34 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const ManualEntry = () => {
-  const [bags, setBags] = useState('');
-  const [zone, setZone] = useState('');
-  const [corrected, setCorrected] = useState(false);
-  const [authCode, setAuthCode] = useState('');
+  const [Weight, setWeight] = useState('');
+  const [Zone, setZone] = useState('');
+  const [Unit, setUnit] = useState('');
   const [manualLoading, setManualLoading] = useState(false);
-  const [coords, setCoords] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setCoords({latitude: position.coords.latitude, longitude: position.coords.longitude});
-    });
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleManualEntry = () => {
-    if (bags !== '' && zone !== '' && coords && authCode !== '') {
+    if (Weight !== '' && Zone !== '' && Unit !== '') {
       setManualLoading(true);
       const data = {
-        bags: parseInt(bags),
-        zone: parseInt(zone),
-        location: new GeoPoint(coords.latitude, coords.longitude),
-        time: new Date(),
-        correction: corrected,
-        authCode: parseInt(authCode)
+        Weight: parseInt(Weight),
+        Zone: parseInt(Zone),
+        Date: new Date(),
+        Unit: Unit
       };
-      addDoc(collection(firestore, "React App"), data)
+      addDoc(collection(firestore, "Scale App"), data)
         .then(() => {
           alert("Manual entry added successfully!");
-          setBags('');
+          setWeight('');
           setZone('');
-          setCorrected(false);
-          setAuthCode('');
+          setUnit('');
           setManualLoading(false);
         })
         .catch(error => {
@@ -45,54 +42,44 @@ const ManualEntry = () => {
           setManualLoading(false);
         });
     } else {
-      alert("Please enter bags, zone, auth code, and make sure location is available.");
+      alert("Please enter valid Weight and Zone values and select the proper units.");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center w-full mt-20">
-      <div className="text-3xl font-bold mb-6 mt-20">Manual Entry</div>
+      <div className="text-3xl font-bold mb-6 mt-20">Scale Manual Entry</div>
       <div className="flex flex-col items-center justify-center w-full">
-        <div className="flex items-center mb-4">
+        <div className="flex justify-center mb-4">
           <input
             type="number"
-            value={bags}
-            onChange={(e) => setBags(e.target.value)}
-            placeholder="Bags"
-            className="rounded-lg border border-black px-4 py-2 mr-2"
+            value={Weight}
+            onChange={(e) => setWeight(e.target.value)}
+            placeholder="Weight"
+            className="rounded-lg w-2/5 h-10 border border-black px-4 py-2 mr-1"
           />
           <input
             type="number"
-            value={zone}
+            value={Zone}
             onChange={(e) => setZone(e.target.value)}
             placeholder="Zone"
-            className="rounded-lg border border-black px-4 py-2"
+            className="rounded-lg w-2/5 h-10 border border-black px-4 py-2 ml-1"
           />
         </div>
-        <label className="flex items-center mb-4">
-          <input
-            type="checkbox"
-            checked={corrected}
-            onChange={(e) => setCorrected(e.target.checked)}
-            className="mr-2"
-          />
-          Is this a correction to the previous entry?
-        </label>
-        <div className="flex items-center mb-4">
-          <LocationOnIcon className="text-gray-500 mr-2" />
-          <span>{coords ? `${coords.latitude}, ${coords.longitude}` : 'Loading location...'}</span>
+        <div>
+          <select value={Unit} onChange={(e) => setUnit(e.target.value)} className="rounded-lg border border-black px-4 py-2">
+            <option value="">Select Units</option>
+            <option value="lb">Pounds (lb)</option>
+            <option value="kg">Kilograms (kg)</option>
+          </select>
         </div>
-        <input
-            type="number"
-            value={authCode}
-            onChange={(e) => setAuthCode(e.target.value)}
-            placeholder="Auth Code"
-            className="rounded-lg border border-black px-4 py-2 mb-4"
-            onKeyDown={handleManualEntry}
-        />
+        <div className="flex items-center mb-4 mt-2">
+          <img alt="clock" src={require("./ClockIcon.png")} className="w-5 h-5"/>
+          &nbsp;{currentTime.toLocaleTimeString()}
+        </div>
         <button onClick={handleManualEntry} className="flex items-center justify-center bg-green-800 text-white rounded-lg px-6 py-3">
           {manualLoading ? <TailSpin className="w-6 h-6 mr-2" /> : <AddCircleOutlineIcon className="mr-2" />}
-          Add Manual Entry
+          Add Entry
         </button>
       </div>
     </div>

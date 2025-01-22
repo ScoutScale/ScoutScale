@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import "./App.css";
 import { TailSpin } from 'react-loading-icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import { collection, query, where, getDocs } from "@firebase/firestore";
 import { useGeolocated } from "react-geolocated";
-import { LogBags } from './LogBags';
+import { MainMenu } from './MainMenu';
 import { firestore } from "./firebase";
 
 function App() {
@@ -16,6 +16,20 @@ function App() {
 
   const authRef = useRef();
   const ref = collection(firestore, "Authentication");
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        document.getElementById("enterButton").click(); // Trigger click event of Enter button
+      }
+    };
+
+    document.addEventListener('keypress', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keypress', handleKeyPress);
+    };
+  }, []);
 
   const enter = async () => {
     setAuthLoading(true);
@@ -32,22 +46,21 @@ function App() {
       setAuthLoading(false);
       setError('No matching auth codes exist.')
     }
-
-  }
+  };
 
   return (
-    <div className="background w-full h-screen" >
+    <div className="bag-logger-container" >
       {authenticated ? (
-        <LogBags authCode={authCode} />
+        <MainMenu authCode={authCode} />
       ) : (
         <div className="flex items-center flex-col flex items-center">
           <div className="text-slate-950 text-3xl font-bold mt-10">Welcome to ScoutScale!</div>
-          <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-2/5 h-2/5 mb-10 mt-10"/>
+          <img alt="logo" src={require("./scout_scale_logo.jpeg")} className="w-50% h-50% mb-1 mt-1"/>
           {error !== '' && (
             <div className="font-bold text-md text-orange-500 mb-5">{error}</div>
           )}
-          <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-20" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="auth code"/>
-          <button onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-20 w-1/5 rounded-lg h-10 text-xl font-bold">
+          <input type="tel" className="rounded-xl input w-3/5 h-10 text-center placeholder:bold mb-5" ref={authRef} onChange={() => {if(error !== ''){setError('')}}}placeholder="Driver Code"/>
+          <button id="enterButton" onClick={() => {enter()}} className="flex justify-center items-center   text-slate-50 button bg-cyan-50 mt-1 w-1/5 rounded-lg h-10 text-xl font-bold">
             {authLoading ? (
               <TailSpin className="w-5 h-5" />
             ) : (

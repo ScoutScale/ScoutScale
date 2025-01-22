@@ -23,5 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 /.idea/
-scale_software/scale_UI/_serial/__pycache__/
-
+/scale_software/scale_UI/_serial/__pycache__/
+/node_modules
+*.pyc

@@ -19,7 +19,7 @@ const ViewTable = ({ authCode }) => {
   };
 
   const downloadInstructions = () => {
-    const fileId = '1utFMVrM7vzlKAMMQrR6C3KnpoUnDWd0J';
+    const fileId = '1bUzE1JjuVKVkfNXf6pCxx5Op2LNwQfnd';
     const instructionsFile = `https://drive.google.com/uc?export=download&id=${fileId}`;
     window.location.href = instructionsFile;
   };
@@ -70,7 +70,9 @@ const ViewTable = ({ authCode }) => {
   
   return (
     <div>
-        <p className="text-center mt-20">
+        <br></br><br></br><br></br>
+        <div className="text-center text-3xl font-bold mt-20">Export and view your data.</div>
+        <p className="text-center mt-5">
             Download <span onClick={downloadInstructions} className="download-link">this</span> zip file and follow instructions to view your data. Begin by extracting the zip after download and then reading the Instructions.txt 
         </p>
         <p className="text-center">
