@@ -44,7 +44,7 @@ function App() {
       authRef.current.value = "";
       setAuthenticated(false);
       setAuthLoading(false);
-      setError('No matching auth codes exist.')
+      setError('No matching auth codes exist. 41706')
     }
   };
 
